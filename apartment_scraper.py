@@ -19,8 +19,7 @@ class Apartment_Scraper:
     def __init__(self,location):
         self.delay = .25
         self.location = location
-        
-
+    
     def setup(self):
         # Add basic runtime arguments for driver
         opts = webdriver.ChromeOptions()
