@@ -1,5 +1,4 @@
 
-
 import os
 import logging 
 import time 
@@ -11,36 +10,50 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 
+
 class ApfCrawlerSpider(scrapy.Spider):
+
     name = "apf_crawler"
     allowed_domains = ["www.apartments.com"]
 
-    def start_requests(self, housing_type="apartments"):
-        city, state = 'austin', 'tx'
-        url = f"https://www.apartments.com/{housing_type}/{city}-{state}/"
+    def __init__(self, city='Austin', state='tx', housing_type="apartments"):
+        super(ApfCrawlerSpider, self).__init__()
+        logging.getLogger().setLevel(logging.WARNING)
+        self.housing_type = housing_type
+        self.city = city
+        self.state = state
+        self.page_num = 0
+        self.list_of_apartment_links = []
+        
+
+    def start_requests(self):
+        self.url = f"https://www.apartments.com/{self.housing_type}/{self.city}-{self.state}/{self.page_num}/"
         yield SeleniumRequest(
-            url=url,
+            url=self.url,
             callback=self.parse,
             wait_time=10,
         )
 
     def parse(self, response):
-       
         link_selector = 'article.placard a.property-link::attr(href)'
-        links = response.css(link_selector).getall()
+        unique_links = set(response.css(link_selector).getall())
 
-        # Since the same link may appear multiple times, use a set to remove duplicates
-        unique_links = set(links)
-        print(len(unique_links))
         for link in unique_links:
-            # Process each unique link
-            print(link) 
+            self.list_of_apartment_links.append(link)
 
-        next_page = response.css('.pagination a.next::attr(href)').get()
-        if next_page:
+        next_page_selector = '.paging a.next'
+        next_page_element = response.css(next_page_selector)
+
+        if next_page_element:
+            self.page_num += 1
+            next_page_url = f"https://www.apartments.com/apartments/{self.city}-{self.state}/{self.page_num}/"
             yield SeleniumRequest(
-                url=next_page,
+                url=next_page_url,
                 callback=self.parse,
                 wait_time=10,
-                wait_until=EC.element_to_be_clickable((By.CLASS_NAME, next_page).click())
             )
+        else:
+            # dump links into file
+            with open(f'{self.city}_{self.state}_apartment_links.json',mode="w") as f:
+                f.writelines([f"{line}\n" for line in self.list_of_apartment_links])
+            return

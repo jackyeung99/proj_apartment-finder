@@ -7,6 +7,29 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
+# Proxy list to avoid ip ban 
+
+ROTATING_PROXY_LIST = [
+  "156.239.59.250:3128",
+  "185.189.199.77:8080",
+  "193.231.40.182:16099",
+  "64.225.8.142:10004",
+  "104.16.207.86:80",
+  "194.163.160.203:40553",
+  "54.37.244.208:7678",
+  "119.93.129.34:80",
+  "104.248.59.38:80",
+  "20.219.177.85:3129",
+  "188.132.222.68:8080",
+  "190.61.48.24:999",
+  "173.212.213.133:3128",
+  "18.141.177.23:80",
+  "50.168.210.226:80",
+  "93.157.248.108:88",
+  "207.2.120.16:80",
+  "108.161.128.43:80",
+  "147.78.169.80:8443"    
+]
 # Scrapy Selenium 
 from shutil import which
   
@@ -14,13 +37,24 @@ SELENIUM_DRIVER_NAME = 'chrome'
 SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
 SELENIUM_DRIVER_ARGUMENTS=['--no-sandbox',
                          #    '--headless',
+                           '--disable-gpu'
                          #    "window-size=1920,1080",
-                            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"]  
-# '--headless'
+                            ]  
+
 DOWNLOADER_MIDDLEWARES = {
-     'scrapy_selenium.SeleniumMiddleware': 800
+      'scrapy_selenium.SeleniumMiddleware': 800,
+      'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
+      'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
      }
 
+# FEEDS = {
+#     'scraped_links.json': {
+#         'format': 'json',
+#         'encoding': 'utf8',
+#         'store_empty': False,
+#         'indent': 4,
+#     }
+# }
 
 BOT_NAME = "apf_scraper"
 
@@ -29,7 +63,7 @@ NEWSPIDER_MODULE = "apf_scraper.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "apf_scraper (+http://www.yourdomain.com)"
+USER_AGENT = "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -42,11 +76,11 @@ ROBOTSTXT_OBEY = False
 # See also autothrottle settings and docs
 #DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
-#CONCURRENT_REQUESTS_PER_DOMAIN = 16
-#CONCURRENT_REQUESTS_PER_IP = 16
+CONCURRENT_REQUESTS_PER_DOMAIN = 16
+CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+# COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
