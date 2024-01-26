@@ -7,12 +7,13 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-# Proxy list to avoid ip ban 
 
+# log level
+LOG_LEVEL = 'WARNING'
+# Proxy list to avoid ip ban 
 ROTATING_PROXY_LIST = "../http.txt"
 # Scrapy Selenium 
 from shutil import which
-  
 SELENIUM_DRIVER_NAME = 'chrome'
 SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
 SELENIUM_DRIVER_ARGUMENTS=['--no-sandbox',
