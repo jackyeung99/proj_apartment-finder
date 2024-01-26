@@ -7,12 +7,15 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
+# Scrapy Selenium 
 from shutil import which
   
 SELENIUM_DRIVER_NAME = 'chrome'
 SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
-SELENIUM_DRIVER_ARGUMENTS=[]  
-
+SELENIUM_DRIVER_ARGUMENTS=['--no-sandbox',
+                         #    '--headless',
+                         #    "window-size=1920,1080",
+                            "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"]  
 # '--headless'
 DOWNLOADER_MIDDLEWARES = {
      'scrapy_selenium.SeleniumMiddleware': 800
@@ -29,7 +32,7 @@ NEWSPIDER_MODULE = "apf_scraper.spiders"
 #USER_AGENT = "apf_scraper (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
