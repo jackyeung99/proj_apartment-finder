@@ -2,6 +2,7 @@
 import os
 import logging 
 import time 
+import re
 
 import scrapy
 from scrapy_selenium import SeleniumRequest
@@ -12,7 +13,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 
 class ApfCrawlerSpider(scrapy.Spider):
-
+    
     name = "apf_crawler"
     allowed_domains = ["www.apartments.com"]
 
@@ -24,36 +25,41 @@ class ApfCrawlerSpider(scrapy.Spider):
         self.state = state
         self.page_num = 0
         self.list_of_apartment_links = []
-        
 
     def start_requests(self):
-        self.url = f"https://www.apartments.com/{self.housing_type}/{self.city}-{self.state}/{self.page_num}/"
+        initial_url = f"https://www.apartments.com/apartments/{self.city}-{self.state}/0/"
         yield SeleniumRequest(
-            url=self.url,
-            callback=self.parse,
+            url=initial_url,
+            callback=self.parse_initial,
             wait_time=10,
         )
+        
+    def parse_initial(self, response):
+        page_range_text = response.css(".pageRange::text").get()
+        if page_range_text:
+            max_page_num_match = re.search(r'Page \d+ of (\d+)', page_range_text)
+            if max_page_num_match:
+                max_page_num = int(max_page_num_match.group(1))
+                return self.start_scraping(max_page_num)
 
-    def parse(self, response):
-        link_selector = 'article.placard a.property-link::attr(href)'
-        unique_links = set(response.css(link_selector).getall())
-
-        for link in unique_links:
-            self.list_of_apartment_links.append(link)
-
-        next_page_selector = '.paging a.next'
-        next_page_element = response.css(next_page_selector)
-
-        if next_page_element:
-            self.page_num += 1
-            next_page_url = f"https://www.apartments.com/apartments/{self.city}-{self.state}/{self.page_num}/"
+    def start_scraping(self, max_page_num):
+        for page_num in range(max_page_num+1):
+            url = f"https://www.apartments.com/apartments/{self.city}-{self.state}/{page_num}/"
             yield SeleniumRequest(
-                url=next_page_url,
+                url=url,
                 callback=self.parse,
                 wait_time=10,
             )
-        else:
-            # dump links into file
-            with open(f'{self.city}_{self.state}_apartment_links.json',mode="w") as f:
-                f.writelines([f"{line}\n" for line in self.list_of_apartment_links])
-            return
+        
+    def parse(self, response):
+        link_selector = 'article.placard a.property-link::attr(href)'
+        unique_links = set(response.css(link_selector).getall())
+        self.list_of_apartment_links.extend(unique_links)
+
+    def dump(self):
+        with open(f'{self.city}_{self.state}_apartment_links.json',mode="w") as f:
+            f.writelines([f"{line}\n" for line in self.list_of_apartment_links])
+        
+    def closed(self, reason):
+        self.dump()
+        print(f"Spider closed because {reason}")

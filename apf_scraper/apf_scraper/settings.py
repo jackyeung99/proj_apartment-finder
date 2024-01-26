@@ -9,27 +9,7 @@
 
 # Proxy list to avoid ip ban 
 
-ROTATING_PROXY_LIST = [
-  "156.239.59.250:3128",
-  "185.189.199.77:8080",
-  "193.231.40.182:16099",
-  "64.225.8.142:10004",
-  "104.16.207.86:80",
-  "194.163.160.203:40553",
-  "54.37.244.208:7678",
-  "119.93.129.34:80",
-  "104.248.59.38:80",
-  "20.219.177.85:3129",
-  "188.132.222.68:8080",
-  "190.61.48.24:999",
-  "173.212.213.133:3128",
-  "18.141.177.23:80",
-  "50.168.210.226:80",
-  "93.157.248.108:88",
-  "207.2.120.16:80",
-  "108.161.128.43:80",
-  "147.78.169.80:8443"    
-]
+ROTATING_PROXY_LIST = "../http.txt"
 # Scrapy Selenium 
 from shutil import which
   
@@ -74,7 +54,7 @@ ROBOTSTXT_OBEY = False
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 CONCURRENT_REQUESTS_PER_DOMAIN = 16
 CONCURRENT_REQUESTS_PER_IP = 16
@@ -117,16 +97,16 @@ CONCURRENT_REQUESTS_PER_IP = 16
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
-#AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_ENABLED = True
 # The initial download delay
-#AUTOTHROTTLE_START_DELAY = 5
+AUTOTHROTTLE_START_DELAY = 5
 # The maximum download delay to be set in case of high latencies
-#AUTOTHROTTLE_MAX_DELAY = 60
+AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to
 # each remote server
-#AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
+AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 # Enable showing throttling stats for every response received:
-#AUTOTHROTTLE_DEBUG = False
+AUTOTHROTTLE_DEBUG = False
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
