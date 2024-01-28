@@ -39,7 +39,7 @@ class apf_parser_Spider(scrapy.Spider):
 
     def start_requests(self):
         ''' Init scrapy framework'''
-        for link in self.links[:15]:
+        for link in self.links:
             logging.debug(f'Accessing apartment at: {link}')
             yield SeleniumRequest(
                 url=link,
