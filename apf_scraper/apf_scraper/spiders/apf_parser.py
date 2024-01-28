@@ -1,19 +1,32 @@
 import scrapy
 from scrapy_selenium import SeleniumRequest
+from apf_scraper.items import ApfScraperItem
 import logging
 import os
 
 
 class apf_parser_Spider(scrapy.Spider):
     name = "apf_parser"
+    custom_settings = {
+        'ITEM_PIPELINES': {
+            'apf_scraper.pipelines.ApfScraperPipeline': 300,
+        }
+    }
+    
+    def __init__(self,city,state,*args, **kwargs):
+        super(apf_parser_Spider, self).__init__(*args, **kwargs)
+        self.city = city.lower()
+        self.state = state.lower()
+        # file handling
+        self.base_dir = f"../data/{self.city}_{self.state}"  
+        self.links_file = os.path.join(self.base_dir, f"{self.city}_{self.state}_links.txt") 
+        self.output_file_path = os.path.join(self.base_dir, f"{self.city}_{self.state}.json")  
+        self.links = self.get_links(self.links_file)
+        
 
-    def __init__(self,file_name):
-        super(apf_parser_Spider, self).__init__()
-        self.links = self.get_links(file_name)
-
-    def get_links(self,file_name):
+    def get_links(self,links):
         logging.debug(os.getcwd())
-        file_path = os.path.join("../","data", "apartments_links", file_name)
+        file_path = os.path.join(links)
         try:
             with open(file_path,mode="r") as f:
                 links = [line.strip() for line in f]
@@ -37,12 +50,13 @@ class apf_parser_Spider(scrapy.Spider):
     def parse_general_info(self,response):
         ''' Retrive information about the apartment complex'''
         property_name = response.css('#propertyName::text').get(default='').strip()
+        property_url = response.url
         address = response.css('#propertyAddressRow > div > h2 > span.delivery-address > span::text').get(default='')
         neighborhood_link = response.css('#propertyAddressRow > div > h2 > span.neighborhoodAddress > a::attr(href)').get(default='')
         neighborhood = response.css('#propertyAddressRow > div > h2 > span.neighborhoodAddress > a::text').get(default='')
-        reviews = response.css('span.reviewRating ::text').get(default='')
+        reviews = response.css('span.reviewRating ::text').get(default='None')
         verification = response.css('#tooltipToggle > span:nth-child(1) > span::text').get(default='un-verified')
-        gen_info_tuples = (property_name,address,neighborhood_link,neighborhood,reviews,verification)
+        gen_info_tuples = (property_name,property_url,address,neighborhood_link,neighborhood,reviews,verification)
         return gen_info_tuples
 
     def parse_unit_prices(self,response):
@@ -62,9 +76,16 @@ class apf_parser_Spider(scrapy.Spider):
         return amenities
 
     def parse(self, response):
-        print("======== gen_info ===========")
-        print(self.parse_general_info(response))
-        print("======== gen_units ===========")
-        print(self.parse_unit_prices(response))
-        print("======== ammenities ===========")
-        print(self.parse_ammenities(response))
+        gen_info = self.parse_general_info(response)
+        item = ApfScraperItem()
+        item['PropertyName'] = gen_info[0]
+        item['PropertyUrl'] = gen_info[1]
+        item['Address'] = gen_info[2]
+        item['NeighborhoodLink'] = gen_info[3]
+        item['Neighborhood'] = gen_info[4]
+        item['ReviewScore'] = gen_info[5]
+        item['VerifiedListing'] = gen_info[6]
+        item['Units'] = [dict(zip(["MaxRent", "Model", "Beds", "Baths", "SquareFootage"], unit)) for unit in self.parse_unit_prices(response)]
+        item['Amenities'] = list(self.parse_ammenities(response))
+
+        yield item

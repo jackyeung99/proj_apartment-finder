@@ -7,5 +7,12 @@ import scrapy
 
 
 class ApfScraperItem(scrapy.Item):
-    # define the fields for your item here like:
-    link = scrapy.Field()
+    PropertyName = scrapy.Field()
+    PropertyUrl = scrapy.Field()
+    Address = scrapy.Field()
+    NeighborhoodLink = scrapy.Field()
+    Neighborhood = scrapy.Field()
+    ReviewScore = scrapy.Field()
+    VerifiedListing = scrapy.Field()
+    Units = scrapy.Field() 
+    Amenities = scrapy.Field()
