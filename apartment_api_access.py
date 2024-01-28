@@ -1,21 +1,21 @@
 import requests
 import pandas as pd 
 
-USER_AUTHENTICATION = {
-			"X-RapidAPI-Key": "f2e1092fdfmsh426df4ce1a202edp190c71jsnc16dabc266d3",
-			"X-RapidAPI-Host": "apartments-com1.p.rapidapi.com"
-		}
 
 class api_access:   
-	def __init__(self, location):
+	def __init__(self, location,api_key,api_host):
 		self.apartment_data = pd.DataFrame()
 		self.location = location
+		self.USER_AUTHENTICATION = {
+			api_key[0]:api_key[1],
+			api_host[0]:api_host[1]
+		}
 
 	def search_property(self):
 		url = "https://apartments-com1.p.rapidapi.com/properties"
 		querystring = {'location': self.location}
 		try:
-			response = requests.get(url, headers=USER_AUTHENTICATION, params=querystring)
+			response = requests.get(url, headers=self.USER_AUTHENTICATION, params=querystring)
 			if response.status_code == 200:
 				return response.json()['data']
 			else:
@@ -28,7 +28,7 @@ class api_access:
             
 	def get_property_details(self, apartment_id):
 		url = f"https://apartments-com1.p.rapidapi.com/properties/{apartment_id}"
-		response = requests.get(url, headers=USER_AUTHENTICATION)
+		response = requests.get(url, headers=self.USER_AUTHENTICATION)
 		if response.status_code == 200:
 			return response.json()['data']
 		else:
@@ -36,7 +36,7 @@ class api_access:
 
 	def get_property_review(self, apartment_id):
 		url = f"https://apartments-com1.p.rapidapi.com/properties/{apartment_id}/reviews"
-		response = requests.get(url, headers=USER_AUTHENTICATION)
+		response = requests.get(url, headers=self.USER_AUTHENTICATION)
 		if response.status_code == 200:
 			return response.json()['data']
 		else:
@@ -66,5 +66,7 @@ class api_access:
 
 	
 if __name__ == "__main__":
-	access = api_access("Austin")
+	api_key = input('Api Key:')
+	api_host = input('Api Host:')
+	access = api_access("Austin",api_key,api_host)
 	access.main()
