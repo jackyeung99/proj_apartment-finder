@@ -11,7 +11,7 @@
 # log level
 LOG_LEVEL = 'WARNING'
 # Proxy list to avoid ip ban 
-ROTATING_PROXY_LIST = "../http.txt"
+# ROTATING_PROXY_LIST = "../http.txt"
 # Scrapy Selenium 
 from shutil import which
 SELENIUM_DRIVER_NAME = 'chrome'
@@ -24,8 +24,8 @@ SELENIUM_DRIVER_ARGUMENTS=['--no-sandbox',
 
 DOWNLOADER_MIDDLEWARES = {
       'scrapy_selenium.SeleniumMiddleware': 800,
-      'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
-      'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
+      # 'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
+      # 'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
      }
 
 # FEEDS = {
@@ -44,7 +44,7 @@ NEWSPIDER_MODULE = "apf_scraper.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
