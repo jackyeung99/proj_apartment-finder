@@ -1,17 +1,24 @@
 import scrapy
+
 from scrapy_selenium import SeleniumRequest
-from apf_scraper.items import ApfScraperItem
+from apf_scraper.items import ApfUnitItem, ApfGeneralInfoItem
+
 import logging
 import os
+import json
 
+from pympler import muppy, summary
+from scrapy import signals
 
 class apf_parser_Spider(scrapy.Spider):
     name = "apf_parser"
     custom_settings = {
         'ITEM_PIPELINES': {
-            'apf_scraper.pipelines.ApfScraperPipeline': 300,
+            'apf_scraper.pipelines.ApartmentGeneralInfoPipeline': 100,
+            'apf_scraper.pipelines.UnitPricesPipeline': 200,
         }
     }
+
     
     def __init__(self,city,state,*args, **kwargs):
         super(apf_parser_Spider, self).__init__(*args, **kwargs)
@@ -20,20 +27,22 @@ class apf_parser_Spider(scrapy.Spider):
         # file handling
         self.base_dir = f"../data/{self.city}_{self.state}"  
         self.links_file = os.path.join(self.base_dir, f"{self.city}_{self.state}_links.txt") 
-        self.output_file_path = os.path.join(self.base_dir, f"{self.city}_{self.state}.json")  
-        self.links = self.get_links(self.links_file)
-        
+        self.links = self.get_links(self.links_file) 
+        self.profile_memory()
 
     def get_links(self,links):
         logging.debug(os.getcwd())
         file_path = os.path.join(links)
         try:
             with open(file_path,mode="r") as f:
-                links = [line.strip() for line in f]
-                logging.info(f'{len(links)} links have been loaded for scraping')
+                links = [line.strip() for line in f if line.strip()]
                 return links
+            
         except FileNotFoundError as e:
             logging.critical(f'File not found: {file_path}')
+            return []
+        except json.JSONDecodeError:
+            self.logger.error(f'Error decoding JSON from file: {file_path}')
             return []
 
 
@@ -45,47 +54,71 @@ class apf_parser_Spider(scrapy.Spider):
                 url=link,
                 callback=self.parse,
                 wait_time=10,
+                
             )
     
-    def parse_general_info(self,response):
-        ''' Retrive information about the apartment complex'''
-        property_name = response.css('#propertyName::text').get(default='').strip()
-        property_url = response.url
-        address = response.css('#propertyAddressRow > div > h2 > span.delivery-address > span::text').get(default='')
-        neighborhood_link = response.css('#propertyAddressRow > div > h2 > span.neighborhoodAddress > a::attr(href)').get(default='')
-        neighborhood = response.css('#propertyAddressRow > div > h2 > span.neighborhoodAddress > a::text').get(default='')
-        reviews = response.css('span.reviewRating ::text').get(default='None')
-        verification = response.css('#tooltipToggle > span:nth-child(1) > span::text').get(default='un-verified')
-        gen_info_tuples = (property_name,property_url,address,neighborhood_link,neighborhood,reviews,verification)
-        return gen_info_tuples
+    def parse_general_info(self, response):    
+        info = {
+            'property_name': response.css('#propertyName::text').get().strip(),
+            'property_id':  response.css('body > div.mainWrapper > main::attr(data-listingid)').get(),
+            'property_url': response.url,
+            'address': response.css('#propertyAddressRow .delivery-address span::text').get(),
+            'neighborhood_link': response.css('#propertyAddressRow .neighborhoodAddress a::attr(href)').get(),
+            'neighborhood': response.css('#propertyAddressRow .neighborhoodAddress a::text').get(),
+            'reviews': response.css('span.reviewRating ::text').get('None'),
+            'verification': response.css('#tooltipToggle span::text').get('un-verified'),
+        }
+        return info
 
-    def parse_unit_prices(self,response):
-        ''' Retrieve information for all units'''
-        max_rent = response.css('.unitContainer::attr(data-maxrent)').getall()
-        models = response.css('.unitContainer::attr(data-model)').getall()
-        beds = response.css('.unitContainer::attr(data-beds)').getall()
-        baths = response.css('.unitContainer::attr(data-baths)').getall()
-        sq_foot = response.css('.sqftColumn span:nth-of-type(2)::text').getall()
-        data_tuples = list(zip(max_rent, models, beds, baths,sq_foot))
-        return data_tuples
-    
-    def parse_ammenities(self,response):
-        '''Retriev information for all ammenities'''
-        amenities_selector = 'li.specInfo span::text'
-        amenities = set(response.css(amenities_selector).getall())  
-        return amenities
+    def parse_unit_prices(self, response):
+        # Improve data extraction and structure
+        units = response.css('.unitContainer')
+        apartment_id = response.css('body > div.mainWrapper > main::attr(data-listingid)').get()
+        for unit in units:
+            item = ApfUnitItem(
+                PropertyId = apartment_id,
+                MaxRent = unit.attrib.get('data-maxrent'),
+                Model = unit.attrib.get('data-model'),
+                Beds = unit.attrib.get('data-beds'),
+                Baths =  unit.attrib.get('data-baths'),
+                SquareFootage = unit.css('.sqftColumn span:nth-of-type(2)::text').get()
+            )
+            yield item
+
+    def parse_amenities(self, response):
+        amenities = set(response.css('li.specInfo span::text').getall())
+        return list(amenities)
 
     def parse(self, response):
-        gen_info = self.parse_general_info(response)
-        item = ApfScraperItem()
-        item['PropertyName'] = gen_info[0]
-        item['PropertyUrl'] = gen_info[1]
-        item['Address'] = gen_info[2]
-        item['NeighborhoodLink'] = gen_info[3]
-        item['Neighborhood'] = gen_info[4]
-        item['ReviewScore'] = gen_info[5]
-        item['VerifiedListing'] = gen_info[6]
-        item['Units'] = [dict(zip(["MaxRent", "Model", "Beds", "Baths", "SquareFootage"], unit)) for unit in self.parse_unit_prices(response)]
-        item['Amenities'] = list(self.parse_ammenities(response))
+        general_info = self.parse_general_info(response)
+        yield ApfGeneralInfoItem(
+            PropertyName=general_info['property_name'],
+            PropertyId = general_info['property_id'],
+            PropertyUrl=general_info['property_url'],
+            Address=general_info['address'],
+            NeighborhoodLink=general_info['neighborhood_link'],
+            Neighborhood=general_info['neighborhood'],
+            ReviewScore=general_info['reviews'],
+            VerifiedListing=general_info['verification'],
+            Amenities=self.parse_amenities(response)
+        )
 
-        yield item
+        # Yield unit prices separately to keep the logic clear and maintainable
+        yield from self.parse_unit_prices(response)
+
+    def profile_memory(self):
+        all_objects = muppy.get_objects()
+        print(f"Total objects in memory: {len(all_objects)}")
+
+        suml = summary.summarize(all_objects)
+        summary.print_(suml)
+
+    @classmethod
+    def from_crawler(cls, crawler, *args, **kwargs):
+        spider = super(apf_parser_Spider, cls).from_crawler(crawler, *args, **kwargs)
+        crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
+        return spider
+
+    def spider_closed(self, reason):
+        self.profile_memory()
+        print(f"Spider closed because {reason}")

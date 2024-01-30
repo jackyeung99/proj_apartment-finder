@@ -7,31 +7,45 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 import json
+import os
 
-class ApfScraperPipeline:
-    def __init__(self):
-        self.items_buffer = []
-
+class LinkPipeline:
     def open_spider(self, spider):
-        self.file = open(spider.output_file_path, 'w')
-        self.file.write('[')
+        self.base_dir = f"../data/{spider.city}_{spider.state}"
+        os.makedirs(self.base_dir, exist_ok=True)
+        # Change the file extension to .txt
+        self.file_path = os.path.join(self.base_dir, f'{spider.city}_{spider.state}_links.txt')
+        self.file = open(self.file_path, 'w', encoding='utf-8')
 
     def close_spider(self, spider):
-        if self.items_buffer:
-            self.file.write('\n' + ',\n'.join(self.items_buffer))
-        self.file.write('\n]')
         self.file.close()
 
     def process_item(self, item, spider):
-        if spider.name != "apf_parser":
+        if item.__class__.__name__ == 'ApfScraperLinkItem':
+            # Write the link directly followed by a newline character instead of JSON formatting
+            self.file.write(item['PropertyUrl'] + '\n')
             return item
 
-        line = json.dumps(dict(item), ensure_ascii=False, indent=4)
-        self.items_buffer.append(line)
+class BasePipeline:
+    def open_spider(self, spider):
+        # Dynamically set the file name using spider attributes
+        self.file_name = f'{spider.city}_{spider.state}_{self.file_name_suffix}'
+        self.file_path = f'../data/{spider.city}_{spider.state}/{self.file_name}'
+        self.file = open(self.file_path, 'a', encoding='utf-8')
 
-        # Write buffer to file if it reaches a certain size
-        if len(self.items_buffer) >= 10:  # Adjust the buffer size as needed
-            self.file.write('\n' + ',\n'.join(self.items_buffer) + ',')
-            self.items_buffer = []
+    def close_spider(self, spider):
+        self.file.close()
 
+    def process_item(self, item, spider):
+        if item.__class__.__name__ == self.item_class_name:
+            line = json.dumps(dict(item), ensure_ascii=False) + '\n'
+            self.file.write(line)
         return item
+
+class ApartmentGeneralInfoPipeline(BasePipeline):
+    item_class_name = 'ApfGeneralInfoItem'
+    file_name_suffix = 'info.jsonl'  
+
+class UnitPricesPipeline(BasePipeline):
+    item_class_name = 'ApfUnitItem'
+    file_name_suffix = 'units.jsonl'

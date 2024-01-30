@@ -9,7 +9,7 @@
 
 
 # log level
-LOG_LEVEL = 'WARNING'
+LOG_LEVEL = 'DEBUG'
 # Proxy list to avoid ip ban 
 # ROTATING_PROXY_LIST = "../http.txt"
 # Scrapy Selenium 
@@ -17,7 +17,7 @@ from shutil import which
 SELENIUM_DRIVER_NAME = 'chrome'
 SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
 SELENIUM_DRIVER_ARGUMENTS=['--no-sandbox',
-                         #    '--headless',
+                            # '--headless',
                            '--disable-gpu'
                          #    "window-size=1920,1080",
                             ]  
@@ -28,13 +28,8 @@ DOWNLOADER_MIDDLEWARES = {
       # 'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
      }
 
-# FEEDS = {
-#     'scraped_links.json': {
-#         'format': 'json',
-#         'encoding': 'utf8',
-#         'store_empty': False,
-#         'indent': 4,
-#     }
+# ITEM_PIPELINES = {
+#    'apf_scraper.pipelines.ApfScraperPipeline': 300,
 # }
 
 BOT_NAME = "apf_scraper"
@@ -50,7 +45,7 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 24
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -61,7 +56,7 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 16
 CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-# COOKIES_ENABLED = False
+COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
