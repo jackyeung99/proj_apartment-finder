@@ -12,21 +12,43 @@
 LOG_LEVEL = 'WARNING'
 
 # Scrapy Selenium 
-from shutil import which
-SELENIUM_DRIVER_NAME = 'chrome'
-SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
-SELENIUM_DRIVER_ARGUMENTS=['--no-sandbox',
-                            # '--headless',
-                           '--disable-gpu'
-                         #    "window-size=1920,1080",
-                            ]  
+# from shutil import which
+# SELENIUM_DRIVER_NAME = 'chrome'
+# SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
+# SELENIUM_DRIVER_ARGUMENTS=['--no-sandbox',
+#                             # '--headless',
+#                            '--disable-gpu'
+#                          #    "window-size=1920,1080",
+#                             ]  
 
+
+# DOWNLOADER_MIDDLEWARES = {
+#       'scrapy_selenium.SeleniumMiddleware': 800,
+#       # 'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
+#       # 'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
+#      }
+
+# scrapy playwright
+DOWNLOAD_HANDLERS = {
+    "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+    "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
+}
+
+TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
+# Enable Scrapy-Playwright middleware
 DOWNLOADER_MIDDLEWARES = {
-      'scrapy_selenium.SeleniumMiddleware': 800,
-      # 'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
-      # 'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
-     }
+    'scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler': 500,
+}
+# Playwright settings
+PLAYWRIGHT_BROWSER_TYPE = 'chromium'  # You can specify 'firefox' or 'webkit' if needed
 
+# Playwright launch options (uncomment the 'headless' option if you want headless mode)
+PLAYWRIGHT_LAUNCH_OPTIONS = {
+    # 'headless': True,
+}
+
+# Download timeout in seconds (adjust as needed)
+DOWNLOAD_TIMEOUT = 30
 # ITEM_PIPELINES = {
 #    'apf_scraper.pipelines.ApfScraperPipeline': 300,
 # }
@@ -113,6 +135,6 @@ AUTOTHROTTLE_DEBUG = False
 
 # Set settings whose default value is deprecated to a future-proof value
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
-TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
+# TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 
