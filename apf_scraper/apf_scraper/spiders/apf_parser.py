@@ -1,14 +1,12 @@
 import scrapy
-
 from scrapy_selenium import SeleniumRequest
 from apf_scraper.items import ApfUnitItem, ApfGeneralInfoItem
 
+from scrapy.utils.trackref import get_oldest, iter_all
+from scrapy.utils.trackref import live_refs
 import logging
 import os
 import json
-
-from pympler import muppy, summary
-from scrapy import signals
 
 class apf_parser_Spider(scrapy.Spider):
     name = "apf_parser"
@@ -28,7 +26,7 @@ class apf_parser_Spider(scrapy.Spider):
         self.base_dir = f"../data/{self.city}_{self.state}"  
         self.links_file = os.path.join(self.base_dir, f"{self.city}_{self.state}_links.txt") 
         self.links = self.get_links(self.links_file) 
-        self.profile_memory()
+        
 
     def get_links(self,links):
         logging.debug(os.getcwd())
@@ -74,16 +72,30 @@ class apf_parser_Spider(scrapy.Spider):
         # Improve data extraction and structure
         units = response.css('.unitContainer')
         apartment_id = response.css('body > div.mainWrapper > main::attr(data-listingid)').get()
+        unique_apartments = set()
         for unit in units:
-            item = ApfUnitItem(
-                PropertyId = apartment_id,
-                MaxRent = unit.attrib.get('data-maxrent'),
-                Model = unit.attrib.get('data-model'),
-                Beds = unit.attrib.get('data-beds'),
-                Baths =  unit.attrib.get('data-baths'),
-                SquareFootage = unit.css('.sqftColumn span:nth-of-type(2)::text').get()
-            )
-            yield item
+            # Extracting details for the unique check
+            model = unit.attrib.get('data-model')
+            beds = unit.attrib.get('data-beds')
+            baths = unit.attrib.get('data-baths')
+            square_footage = unit.css('.sqftColumn span:nth-of-type(2)::text').get()
+
+            # Creating a unique tuple to represent each unit
+            unique_identifier = (model, beds, baths, square_footage)
+
+            # Check if the unit has already been processed
+            if unique_identifier not in unique_apartments:
+                unique_apartments.add(unique_identifier)  # Add unique identifier to the set
+
+                item = ApfUnitItem(
+                    PropertyId=apartment_id,
+                    MaxRent=unit.attrib.get('data-maxrent'),
+                    Model=model,
+                    Beds=beds,
+                    Baths=baths,
+                    SquareFootage=square_footage
+                )
+                yield item
 
     def parse_amenities(self, response):
         amenities = set(response.css('li.specInfo span::text').getall())
@@ -106,19 +118,14 @@ class apf_parser_Spider(scrapy.Spider):
         # Yield unit prices separately to keep the logic clear and maintainable
         yield from self.parse_unit_prices(response)
 
-    def profile_memory(self):
-        all_objects = muppy.get_objects()
-        print(f"Total objects in memory: {len(all_objects)}")
+        self.log_live_references()
 
-        suml = summary.summarize(all_objects)
-        summary.print_(suml)
-
-    @classmethod
-    def from_crawler(cls, crawler, *args, **kwargs):
-        spider = super(apf_parser_Spider, cls).from_crawler(crawler, *args, **kwargs)
-        crawler.signals.connect(spider.spider_closed, signal=signals.spider_closed)
-        return spider
+    def log_live_references(self):
+        # Log the count of live HtmlResponse and Request objects
+        response_count = len(live_refs['HtmlResponse'])
+        request_count = len(live_refs['Request'])
+        self.logger.info(f"Live HtmlResponse objects: {response_count}")
+        self.logger.info(f"Live Request objects: {request_count}")
 
     def spider_closed(self, reason):
-        self.profile_memory()
         print(f"Spider closed because {reason}")

@@ -3,6 +3,7 @@ import sys
 import time
 import logging
 
+
 def run_spiders(city, state):
     start = time.time()
     # Run LinkSpider to scrape links

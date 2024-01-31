@@ -32,15 +32,25 @@ class BasePipeline:
         self.file_name = f'{spider.city}_{spider.state}_{self.file_name_suffix}'
         self.file_path = f'../data/{spider.city}_{spider.state}/{self.file_name}'
         self.file = open(self.file_path, 'a', encoding='utf-8')
+        self.first_item = True  # Add a flag to check for the first item
 
     def close_spider(self, spider):
+        # Close the JSON array if necessary
+        if not self.first_item:
+            self.file.write(']\n')  # Close the JSON array
         self.file.close()
 
     def process_item(self, item, spider):
         if item.__class__.__name__ == self.item_class_name:
-            line = json.dumps(dict(item), ensure_ascii=False) + '\n'
+            if self.first_item:
+                self.file.write('[')  # Start the JSON array
+                self.first_item = False
+            else:
+                self.file.write(',\n')  # Add a comma before the next item, except for the first
+            line = json.dumps(dict(item), ensure_ascii=False)
             self.file.write(line)
         return item
+
 
 class ApartmentGeneralInfoPipeline(BasePipeline):
     item_class_name = 'ApfGeneralInfoItem'

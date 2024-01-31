@@ -3,28 +3,38 @@ import os
 import json  
 
 class Preprocessing:
-
     def __init__(self, city, state):
-        data_path = os.path.join("data", f"{city}_{state}", f"{city}_{state}.json")
-        with open(data_path, 'r') as file:  
-            data = json.load(file)  
-        self.units_df = pd.json_normalize(data, 'Units') 
-        self.create_df(data)  
+        # Construct the file path for the JSONL (JSON Lines) file
+        data_path = os.path.join("data", f"{city}_{state}", f"{city}_{state}_units.jsonl")
+        
+        # Open and read the file
+        with open(data_path, 'r') as file:
+            data = file.readlines()
+        
+        # Create a DataFrame from the data
+        self.units_df = self.create_units_df(data)  
 
-    def create_df(self, data):
-        # Add other property details as new columns with repeated values
-        self.units_df['PropertyName'] = data['PropertyName']
-        self.units_df['PropertyUrl'] = data['PropertyUrl']
-        self.units_df['Address'] = data['Address']
-        self.units_df['NeighborhoodLink'] = data['NeighborhoodLink']
-        self.units_df['Neighborhood'] = data['Neighborhood']
-        self.units_df['ReviewScore'] = data['ReviewScore']
-        self.units_df['VerifiedListing'] = data['VerifiedListing']
-        # Convert 'Amenities' list into a string and add as a new column
-        self.units_df['Amenities'] = ', '.join(data['Amenities'])
+    def create_units_df(self, data):
+        # Parse each line as a JSON object and collect them into a list
+        parsed_data = [json.loads(line.strip()) for line in data if line.strip()]
+        
+        # Load the list of dictionaries into a DataFrame and return it
+        return pd.DataFrame(parsed_data)
 
     def main(self):
-        print(self.units_df.head(30))  # Use print() to display the DataFrame
+        self.units_df = self.units_df.drop_duplicates()
+
+        # Drop rows with NaN values in critical columns or fill them with a default value
+        # Here, we're dropping rows where 'SquareFootage' is NaN. You can also use fillna() if you prefer to fill NaN values instead of dropping them
+        self.units_df = self.units_df.dropna(subset=['SquareFootage'])
+
+        # Ensure SquareFootage is a string, handle None values, replace commas, and convert to integers
+        self.units_df['SquareFootage'] = self.units_df['SquareFootage'].apply(
+            lambda x: int(x.replace(',', '')) if x is not None and isinstance(x, str) else x
+        )
+
+        # Save the cleaned DataFrame to a CSV file
+        self.units_df.to_csv('test.csv', index=False)
 
 if __name__ == '__main__':
     city, state = 'austin', 'tx'

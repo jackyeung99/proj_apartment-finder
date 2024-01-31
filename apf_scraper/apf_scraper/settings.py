@@ -9,9 +9,8 @@
 
 
 # log level
-LOG_LEVEL = 'DEBUG'
-# Proxy list to avoid ip ban 
-# ROTATING_PROXY_LIST = "../http.txt"
+LOG_LEVEL = 'WARNING'
+
 # Scrapy Selenium 
 from shutil import which
 SELENIUM_DRIVER_NAME = 'chrome'
