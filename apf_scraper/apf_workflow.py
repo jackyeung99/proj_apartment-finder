@@ -9,6 +9,7 @@ def run_spiders(city, state):
     # Run LinkSpider to scrape links
     subprocess.run(['scrapy', 'crawl', 'apf_crawler', '-a', f'city={city}', '-a', f'state={state}'])
     logging.info('Crawler Finished')
+    print('crawler finished')
     # Run apf_parser_Spider to parse links and save data
     subprocess.run(['scrapy', 'crawl', 'apf_parser', '-a', f'city={city}', '-a', f'state={state}'])
     logging.info('Parser Finished')

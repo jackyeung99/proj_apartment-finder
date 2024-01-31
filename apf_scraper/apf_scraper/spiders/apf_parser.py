@@ -36,7 +36,7 @@ class ApfParserSpider(scrapy.Spider):
             return []
 
     def start_requests(self):
-        for url in self.links[:5]:
+        for url in self.links:
             yield Request(
                 url=url,
                 callback=self.parse,
@@ -85,7 +85,7 @@ class ApfParserSpider(scrapy.Spider):
             'PropertyName': property_name.strip(),
             'PropertyId': property_id.strip(),
             'PropertyUrl': property_url.strip(),
-            'Address': address.strip(),
+            'Address': address.strip() if address.strip() else '',
             'NeighborhoodLink': neighborhood_link.strip(),
             'Neighborhood': neighborhood.strip(),
             'ReviewScore': reviews.strip(),
