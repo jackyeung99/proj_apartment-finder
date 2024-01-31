@@ -76,12 +76,13 @@ class apf_parser_Spider(scrapy.Spider):
         for unit in units:
             # Extracting details for the unique check
             model = unit.attrib.get('data-model')
+            max_rent = unit.attrib.get('data-maxrent'),
             beds = unit.attrib.get('data-beds')
             baths = unit.attrib.get('data-baths')
             square_footage = unit.css('.sqftColumn span:nth-of-type(2)::text').get()
 
             # Creating a unique tuple to represent each unit
-            unique_identifier = (model, beds, baths, square_footage)
+            unique_identifier = (apartment_id, max_rent, model, beds, baths, square_footage)
 
             # Check if the unit has already been processed
             if unique_identifier not in unique_apartments:
@@ -89,7 +90,7 @@ class apf_parser_Spider(scrapy.Spider):
 
                 item = ApfUnitItem(
                     PropertyId=apartment_id,
-                    MaxRent=unit.attrib.get('data-maxrent'),
+                    MaxRent=max_rent,
                     Model=model,
                     Beds=beds,
                     Baths=baths,
