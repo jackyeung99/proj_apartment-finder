@@ -44,8 +44,12 @@ PLAYWRIGHT_BROWSER_TYPE = 'chromium'  # You can specify 'firefox' or 'webkit' if
 
 # Playwright launch options (uncomment the 'headless' option if you want headless mode)
 PLAYWRIGHT_LAUNCH_OPTIONS = {
-    # 'headless': True,
+    'headless': True,
 }
+
+PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT = (
+    30 * 1000
+)
 
 # Download timeout in seconds (adjust as needed)
 DOWNLOAD_TIMEOUT = 30

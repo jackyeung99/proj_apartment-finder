@@ -47,51 +47,102 @@ class ApfParserSpider(scrapy.Spider):
         
 
     async def parse(self, response, **kwargs):
-        logging.info(f"Request meta for URL {response.url}: {response.request.meta}")
-        # Ensure 'playwright_page' is in response.meta before proceeding
-        if 'playwright_page' in response.meta:
-            page = response.meta['playwright_page']
-
+        page = response.meta.get('playwright_page')
+        if not page:
+            self.log(f"Received a non-Playwright response for URL: {response.url}", level=logging.WARNING)
+            return
+        
+        try:
             general_info = await self.parse_general_info(page)
+            # Check if the property name indicates a single unit
+            if 'unit' in general_info['PropertyName'].lower():
+                # Log that a single unit page was found and then skip it
+                self.log(f"Single unit page detected, skipping URL: {response.url}", level=logging.INFO)
+                return  # This will exit the parse method and skip further processing
+            
             yield ApfGeneralInfoItem(**general_info)
-
+            
+            # If it's not a single unit, continue processing unit prices
             unit_prices = await self.parse_unit_prices(page, general_info['PropertyId'])
             for unit_price in unit_prices:
                 yield unit_price
 
+        except Exception as e:
+            self.log(f'An error occurred while parsing the page: {str(e)}', level=logging.ERROR)
+
+        finally:
             await page.close()
-        else:
-            self.logger.warning(f"Received a non-Playwright response for URL: {response.url}")
+
 
     async def parse_general_info(self, page):
-        property_name = await page.text_content('#propertyName')
-        property_id = await page.evaluate('() => document.querySelector("body > div.mainWrapper > main").getAttribute("data-listingid")')
-        property_url = page.url
-        address = await page.text_content('#propertyAddressRow .delivery-address span')
-        neighborhood_link = await page.get_attribute('#propertyAddressRow .neighborhoodAddress a', 'href')
-        neighborhood = await page.text_content('#propertyAddressRow .neighborhoodAddress a')
-        reviews_element = await page.query_selector('span.reviewRating')
-        reviews = await reviews_element.text_content() if reviews_element else 'No reviews'
-        verification = await page.text_content('#tooltipToggle span')
-        amenities_elements = await page.query_selector_all('li.specInfo span')
+        property_name = (await page.text_content('#propertyName')).strip()
+        # Initialize address variable outside the conditional scope for broader accessibility
+        address = ''
+        if 'unit' in property_name.strip().lower():
+            # If 'unit' is in property_name, set address as everything before 'unit'
+            address = property_name.split('unit', 1)[0].strip()  # Splits at the first occurrence of 'unit' and takes the first part
+        else:
+            # If 'unit' is not in property_name, fetch address from the designated element
+            address = await page.text_content('#propertyAddressRow .delivery-address span')
 
-        # Loop through the selected elements and get their text content
-        amenities = []
-        for element in amenities_elements:
-            amenity_text = await element.text_content()
-            amenities.append(amenity_text)
+        property_id = await page.evaluate('''() => document.querySelector("body > div.mainWrapper > main").getAttribute("data-listingid")''')
+        property_url = page.url
+        neighborhood_link = (await page.get_attribute('#propertyAddressRow .neighborhoodAddress a', 'href')).strip()
+        neighborhood = (await page.text_content('#propertyAddressRow .neighborhoodAddress a')).strip()
+        reviews_element = await page.query_selector('span.reviewRating')
+        reviews = (await reviews_element.text_content()).strip() if reviews_element else 'No reviews'
+        verification = (await page.text_content('#tooltipToggle span')).strip()
+
+        # Loop through the selected elements and get their text content for amenities
+        amenities_elements = await page.query_selector_all('li.specInfo span')
+        amenities = [(await element.text_content()).strip() for element in amenities_elements]
 
         return {
-            'PropertyName': property_name.strip(),
-            'PropertyId': property_id.strip(),
-            'PropertyUrl': property_url.strip(),
-            'Address': address.strip() if address.strip() else '',
-            'NeighborhoodLink': neighborhood_link.strip(),
-            'Neighborhood': neighborhood.strip(),
-            'ReviewScore': reviews.strip(),
-            'VerifiedListing': verification.strip(),
+            'PropertyName': property_name,
+            'PropertyId': property_id,
+            'PropertyUrl': property_url,
+            'Address': address,
+            'NeighborhoodLink': neighborhood_link,
+            'Neighborhood': neighborhood,
+            'ReviewScore': reviews,
+            'VerifiedListing': verification,
             'Amenities': amenities
         }
+
+    # async def single_unit_price(self,page,property_id):
+    #     details = ApfUnitItem(
+    #         PropertyId=property_id,
+    #         MaxRent=None,
+    #         Model= 'single_unit',
+    #         Beds=None,
+    #         Baths=None,
+    #         SquareFootage=None
+    #     )
+
+    #     # Use Playwright's query_selector method to grab each piece of information
+    #     rent_element = await page.query_selector('p.rentInfoDetail')
+    #     if rent_element:
+    #         details['MaxRent'] = await rent_element.text_content()
+
+    #     bedrooms_element = await page.query_selector('div.priceBedRangeInfoInnerContainer:has(p.rentInfoLabel:has-text("Bedrooms")) p.rentInfoDetail')
+    #     if bedrooms_element:
+    #         details['Beds'] = await bedrooms_element.text_content()
+
+    #     bathrooms_element = await page.query_selector('div.priceBedRangeInfoInnerContainer:has(p.rentInfoLabel:has-text("Bathrooms")) p.rentInfoDetail')
+    #     if bathrooms_element:
+    #         details['Baths'] = await bathrooms_element.text_content()
+
+    #     square_feet_element = await page.query_selector('div.priceBedRangeInfoInnerContainer:has(p.rentInfoLabel:has-text("Square Feet")) p.rentInfoDetail')
+    #     if square_feet_element:
+    #         details['SquareFootage'] = await square_feet_element.text_content()
+
+    #     # Clean up the extracted text, if necessary
+    #     for key in details:
+    #         if details[key]:
+    #             details[key] = details[key].strip()
+
+    #     return details
+
 
     async def parse_unit_prices(self, page, property_id):
         units = await page.query_selector_all('.unitContainer')
@@ -119,3 +170,4 @@ class ApfParserSpider(scrapy.Spider):
                 unit_items.append(item)
 
         return unit_items
+
