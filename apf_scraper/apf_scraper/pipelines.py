@@ -6,7 +6,9 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+from scrapy.exceptions import DropItem
 import json
+import csv
 import os
 
 class LinkPipeline:
@@ -26,36 +28,65 @@ class LinkPipeline:
             self.file.write(item['PropertyUrl'] + '\n')
             return item
 
+# class BasePipeline:
+#     def open_spider(self, spider):
+#         # Dynamically set the file name using spider attributes
+#         self.file_name = f'{spider.city}_{spider.state}_{self.file_name_suffix}'
+#         self.file_path = f'../data/{spider.city}_{spider.state}/{self.file_name}'
+#         self.file = open(self.file_path, 'a', encoding='utf-8')
+#         self.first_item = True  # Add a flag to check for the first item
+
+#     def close_spider(self, spider):
+#         # Close the JSON array if necessary
+#         if not self.first_item:
+#             self.file.write(']\n')  # Close the JSON array
+#         self.file.close()
+
+#     def process_item(self, item, spider):
+#         if item.__class__.__name__ == self.item_class_name:
+#             if self.first_item:
+#                 self.file.write('[')  # Start the JSON array
+#                 self.first_item = False
+#             else:
+#                 self.file.write(',\n')  # Add a comma before the next item, except for the first
+#             line = json.dumps(dict(item), ensure_ascii=False)
+#             self.file.write(line)
+#         return item
+
+
+# class ApartmentGeneralInfoPipeline(BasePipeline):
+#     item_class_name = 'ApfGeneralInfoItem'
+#     file_name_suffix = 'info.jsonl'  
+
+# class UnitPricesPipeline(BasePipeline):
+#     item_class_name = 'ApfUnitItem'
+#     file_name_suffix = 'units.jsonl'
+        
 class BasePipeline:
     def open_spider(self, spider):
         # Dynamically set the file name using spider attributes
         self.file_name = f'{spider.city}_{spider.state}_{self.file_name_suffix}'
         self.file_path = f'../data/{spider.city}_{spider.state}/{self.file_name}'
-        self.file = open(self.file_path, 'a', encoding='utf-8')
-        self.first_item = True  # Add a flag to check for the first item
+        self.file = open(self.file_path, 'w', newline='', encoding='utf-8')
+        self.writer = None  # Initialize the CSV writer
 
     def close_spider(self, spider):
-        # Close the JSON array if necessary
-        if not self.first_item:
-            self.file.write(']\n')  # Close the JSON array
         self.file.close()
 
     def process_item(self, item, spider):
         if item.__class__.__name__ == self.item_class_name:
-            if self.first_item:
-                self.file.write('[')  # Start the JSON array
-                self.first_item = False
-            else:
-                self.file.write(',\n')  # Add a comma before the next item, except for the first
-            line = json.dumps(dict(item), ensure_ascii=False)
-            self.file.write(line)
+            if not self.writer:
+                self.writer = csv.DictWriter(self.file, fieldnames=item.fields.keys())
+                self.writer.writeheader()  # Write the header row based on item fields
+            self.writer.writerow(dict(item))  # Write item fields as a row in the CSV file
+        else:
+            raise DropItem(f"Item not of type {self.item_class_name}")
         return item
-
 
 class ApartmentGeneralInfoPipeline(BasePipeline):
     item_class_name = 'ApfGeneralInfoItem'
-    file_name_suffix = 'info.jsonl'  
+    file_name_suffix = 'info.csv'
 
 class UnitPricesPipeline(BasePipeline):
     item_class_name = 'ApfUnitItem'
-    file_name_suffix = 'units.jsonl'
+    file_name_suffix = 'units.csv'
