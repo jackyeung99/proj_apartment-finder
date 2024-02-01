@@ -68,7 +68,7 @@ class ApfParserSpider(scrapy.Spider):
                 yield unit_price
 
         except Exception as e:
-            self.log(f'An error occurred while parsing the page: {str(e)}', level=logging.ERROR)
+            self.log(f'An error occurred while parsing the page:{response.url} {str(e)}', level=logging.ERROR)
 
         finally:
             await page.close()
@@ -154,7 +154,9 @@ class ApfParserSpider(scrapy.Spider):
             max_rent = await unit.get_attribute('data-maxrent')
             beds = await unit.get_attribute('data-beds')
             baths = await unit.get_attribute('data-baths')
-            square_footage = await unit.get_attribute('.sqftColumn span:nth-of-type(2)')
+
+            square_footage_element = await unit.query_selector('.sqftColumn span:nth-of-type(2)')
+            square_footage = await square_footage_element.text_content() if square_footage_element else ''
             unique_identifier = (property_id, max_rent, model, beds, baths, square_footage)
 
             if unique_identifier not in unique_apartments:

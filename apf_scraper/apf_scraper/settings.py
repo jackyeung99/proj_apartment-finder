@@ -48,21 +48,18 @@ PLAYWRIGHT_LAUNCH_OPTIONS = {
 }
 
 PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT = (
-    30 * 1000
+    10 * 1000
 )
 
 # Download timeout in seconds (adjust as needed)
-DOWNLOAD_TIMEOUT = 30
-# ITEM_PIPELINES = {
-#    'apf_scraper.pipelines.ApfScraperPipeline': 300,
-# }
+DOWNLOAD_TIMEOUT = 10
 
 BOT_NAME = "apf_scraper"
 
 SPIDER_MODULES = ["apf_scraper.spiders"]
 NEWSPIDER_MODULE = "apf_scraper.spiders"
 
-
+pa
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 
@@ -70,12 +67,12 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 24
+CONCURRENT_REQUESTS = 36
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = 2.5
 # The download delay setting will honor only one of:
 CONCURRENT_REQUESTS_PER_DOMAIN = 16
 CONCURRENT_REQUESTS_PER_IP = 16
@@ -125,7 +122,7 @@ AUTOTHROTTLE_START_DELAY = 5
 AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to
 # each remote server
-AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
+AUTOTHROTTLE_TARGET_CONCURRENCY = 2.0
 # Enable showing throttling stats for every response received:
 AUTOTHROTTLE_DEBUG = False
 
