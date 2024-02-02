@@ -32,14 +32,9 @@ class Preprocessing:
         
         self.main_data['Amenities'] = self.main_data['Amenities'].apply(ast.literal_eval)
         self.main_data['Amenities'] = self.main_data['Amenities'].apply(lambda amenities_list: [amenity.replace('*', '') for amenity in amenities_list])
-
-        unique = []
-        for row in self.main_data['Amenities']:
-            for word in row:
-                if word.lower() not in unique:
-                    unique.append(word.lower())
-
-        print(sorted(unique)[:100])
+        unique_set = set(word.lower() for row in self.main_data['Amenities'] for word in row)
+        print(unique_set)
+        
 
     def main(self):
         self.clean_sq_foot_column()
