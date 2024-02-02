@@ -1,8 +1,5 @@
 from sklearn.preprocessing import LabelEncoder
-from geopy.geocoders import Nominatim
-from geopy.extra.rate_limiter import RateLimiter
-from concurrent.futures import ThreadPoolExecutor
-from geopy.exc import GeocoderTimedOut, GeocoderServiceError
+import ast
 import pandas as pd
 import os
 import time
@@ -31,28 +28,26 @@ class Preprocessing:
         self.main_data['Neighborhood_Label'] = label_encoder.fit_transform(self.main_data['Neighborhood'])
         self.main_data['VerifiedListing'] = self.main_data['VerifiedListing'].apply(lambda x: 1 if x == 'Verified Listing' else 0)
 
-    # def geocode_address(self, address, attempts=3, delay=1):
-    #     geolocator = Nominatim(user_agent="geoapiExercises")
-    #     for attempt in range(attempts):
-    #         try:
-    #             location = geolocator.geocode(f"{address},{self.city},{self.state}")
-    #             return (location.latitude, location.longitude) if location else (None, None)
-    #         except (GeocoderTimedOut, GeocoderServiceError) as e:
-    #             if attempt < attempts - 1:  # If not the last attempt, wait before retrying
-    #                 time.sleep(delay)
-    #                 continue
-    #             else:
-    #                 return None, None 
+    def clean_amenities(self):
+        
+        self.main_data['Amenities'] = self.main_data['Amenities'].apply(ast.literal_eval)
+        self.main_data['Amenities'] = self.main_data['Amenities'].apply(lambda amenities_list: [amenity.replace('*', '') for amenity in amenities_list])
 
+        unique = []
+        for row in self.main_data['Amenities']:
+            for word in row:
+                if word.lower() not in unique:
+                    unique.append(word.lower())
+
+        print(sorted(unique)[:100])
 
     def main(self):
         self.clean_sq_foot_column()
         self.encode_categories()
-        
-        pd.set_option('display.max_columns', None)
-
-        # Now, when you call df.head(), it will display all columns
-        print(self.main_data.head())
+        self.clean_amenities()
+    
+        # pd.set_option('display.max_columns', None)
+        # print(self.main_data.head())
 
 if __name__ == '__main__':
     city, state = 'austin', 'tx'
