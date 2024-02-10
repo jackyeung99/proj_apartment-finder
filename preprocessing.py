@@ -29,7 +29,6 @@ class Preprocessing:
         self.main_data['VerifiedListing'] = self.main_data['VerifiedListing'].apply(lambda x: 1 if x == 'Verified Listing' else 0)
 
     def clean_amenities(self):
-        
         self.main_data['Amenities'] = self.main_data['Amenities'].apply(ast.literal_eval)
         self.main_data['Amenities'] = self.main_data['Amenities'].apply(lambda amenities_list: [amenity.replace('*', '') for amenity in amenities_list])
         unique_set = set(word.lower() for row in self.main_data['Amenities'] for word in row)
