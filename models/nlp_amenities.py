@@ -16,8 +16,8 @@ import os
 # nltk.download('stopwords')
 
 class nlp_processor:
+    # Instantize once to avoid loading word2vec multiple times
     _instance = None
-
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(nlp_processor, cls).__new__(cls)
@@ -37,25 +37,30 @@ class nlp_processor:
         return cls._instance
 
     def preprocess_text(self, text):
+        # retrieve important base words from list of ammenities
         tokens = word_tokenize(text.lower())
         return [self.lemmatizer.lemmatize(token) for token in tokens if token.isalpha() and token not in stopwords.words('english')]
 
     def phrase_detection(self,input_list):
+        # handle multiple word amenitites
         tokenized_list = [self.preprocess_text(item) for item in input_list]
         phrases = Phrases(tokenized_list, min_count=1, threshold=1)
         bigram = Phraser(phrases)
         return [' '.join(bigram[tokens]) for tokens in tokenized_list]
 
     def get_embedding(self, text):
+        # use Word2vec to vectorize words
         tokens = text.split()
         vectors = [self.word2vec_model[token] for token in tokens if token in self.word2vec_model]
         return np.mean(vectors, axis=0) if vectors else None
 
     def categorize_items(self,input_list):
+        # find the best class option for a word 
         phrased_list = self.phrase_detection(input_list)
         categorized_items = {category: [] for category in self.categories}
         categorized_items['Others'] = []
 
+        # retrieve vectors for all categories and their seed words 
         for item in phrased_list:
             item_embedding = self.get_embedding(item)
             if item_embedding is not None:
@@ -65,6 +70,7 @@ class nlp_processor:
                 for category, seed_words in self.categories.items():
                     for seed in seed_words:
                         seed_embedding = self.get_embedding(seed)
+                        # find the category with the smallest cosine similarity value
                         if seed_embedding is not None:
                             distance = cosine(item_embedding, seed_embedding)
                             if distance < min_distance:
@@ -92,7 +98,8 @@ class nlp_processor:
         
         return base_vector
 
-    def convert_amenities_to_vector(self,input_list):   
+    def convert_amenities_to_vector(self,input_list):  
+        # pipeline for words to vectors 
         categorized_items = self.categorize_items(input_list)
         vector = self.output_vector(categorized_items)
         return vector

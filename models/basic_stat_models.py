@@ -13,7 +13,6 @@ class basic_stat_models:
     def prepare_data(self):
         # Convert 'MaxRent' to numeric and handle 'SquareFootage'
         self.units['MaxRent'] = pd.to_numeric(self.units['MaxRent'], errors='coerce')
-
         # Drop NaN values that may have resulted from conversion errors
         self.units.dropna(subset=['MaxRent', 'SquareFootage'], inplace=True)
 
@@ -49,5 +48,5 @@ class basic_stat_models:
         plt.show()
 
 if __name__ == '__main__':
-    stat = basic_stat_models('../test.csv')
+    stat = basic_stat_models('../data/processed_data/austin_tx_processed.csv')
     stat.main()
