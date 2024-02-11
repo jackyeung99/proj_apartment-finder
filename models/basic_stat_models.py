@@ -5,7 +5,7 @@ import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 import math
-
+import numpy as np
 
 class BasicStatModels:
 
@@ -17,6 +17,9 @@ class BasicStatModels:
         self.main_data = self.main_data.drop('PropertyId', axis=1)
         # Ensure all data is numeric before calculating the correlation matrix
         self.main_data = self.main_data.apply(pd.to_numeric, errors='ignore')
+        lower_cap = self.main_data['MaxRent'].quantile(0.05)
+        upper_cap = self.main_data['MaxRent'].quantile(0.95)
+        self.main_data['MaxRent'] = self.main_data['MaxRent'].clip(lower_cap, upper_cap)
 
     def histogram(self, ax):
         ax.hist(self.main_data['MaxRent'], bins='auto', color='blue', alpha=0.7)
@@ -45,6 +48,19 @@ class BasicStatModels:
         sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap='coolwarm', ax=ax)
         ax.set_title('Correlation Matrix')
 
+    def neighborhood_heat_map(self):
+        neighborhoods = self.main_data.groupby('Neighborhood_Label').agg(
+        MaxRent_Mean=('MaxRent', 'mean'),
+        MaxRent_Std=('MaxRent', 'std'),
+        Latitude_Mean=('Latitude', 'mean'),
+        Longitude_Mean=('Longitude', 'mean')
+        )
+        for index, row in neighborhoods.iterrows():
+            print(f"Neighborhood: {index}")
+            print(f"MaxRent Mean: {row['MaxRent_Mean']}, MaxRent Std: {row['MaxRent_Std']}")
+            print(f"Latitude Mean: {row['Latitude_Mean']}, Longitude Mean: {row['Longitude_Mean']}")
+            print() 
+
     def flexible_plotting_system(self):
         plot_functions = [self.histogram, self.scatter_plot, self.correlation_matrix]
         num_plots = len(plot_functions)
@@ -65,10 +81,11 @@ class BasicStatModels:
 
     def main(self):
         self.prepare_data()
-        with pd.option_context('display.max_rows', None, 'display.max_columns', None): print(self.main_data.describe())
+        self.neighborhood_heat_map()
+        # with pd.option_context('display.max_rows', None, 'display.max_columns', None): print(self.main_data.describe())
         self.flexible_plotting_system()
 
 if __name__ == '__main__':
-    stat = BasicStatModels('../data/processed_data/seattle_wa_processed.csv')
+    stat = BasicStatModels('../data/processed_data/austin_tx_processed.csv')
     stat.main()
 
