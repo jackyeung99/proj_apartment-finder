@@ -1,52 +1,74 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
+import math
 
 
-class basic_stat_models:
-    
+class BasicStatModels:
+
     def __init__(self, file):
-        self.units = pd.read_csv(file)
+        self.main_data = pd.read_csv(file)
 
     def prepare_data(self):
-        # Convert 'MaxRent' to numeric and handle 'SquareFootage'
-        self.units['MaxRent'] = pd.to_numeric(self.units['MaxRent'], errors='coerce')
-        # Drop NaN values that may have resulted from conversion errors
-        self.units.dropna(subset=['MaxRent', 'SquareFootage'], inplace=True)
+    
+        self.main_data = self.main_data.drop('PropertyId', axis=1)
+        # Ensure all data is numeric before calculating the correlation matrix
+        self.main_data = self.main_data.apply(pd.to_numeric, errors='ignore')
 
-    def main(self):
-        self.prepare_data()
+    def histogram(self, ax):
+        ax.hist(self.main_data['MaxRent'], bins='auto', color='blue', alpha=0.7)
+        ax.set_title('Distribution of Rent Prices')
+        ax.set_xlabel('Rent Price')
+        ax.set_ylabel('Frequency')
+        ax.grid(axis='y', alpha=0.75)
 
-        # Creating subplots
-        fig, axs = plt.subplots(1, 2, figsize=(20, 6))
-
-        # Histogram
-        axs[0].hist(self.units['MaxRent'], bins='auto', color='blue', alpha=0.7)
-        axs[0].set_title('Distribution of Rent Prices')
-        axs[0].set_xlabel('Rent Price')
-        axs[0].set_ylabel('Frequency')
-        axs[0].grid(axis='y', alpha=0.75)
-
-        # Linear Regression
-        X = self.units[['SquareFootage']]
-        y = self.units['MaxRent']
+    def scatter_plot(self, ax):
+        X = self.main_data[['SquareFootage']]
+        y = self.main_data['MaxRent']
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
         model = LinearRegression()
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
 
-        axs[1].scatter(X_test, y_test, color='black', label='Actual Rent')
-        axs[1].plot(X_test, y_pred, color='blue', linewidth=3, label='Predicted Rent')
-        axs[1].set_xlabel('Square Footage')
-        axs[1].set_ylabel('Rent Price')
-        axs[1].set_title('Linear Regression: Rent Price vs. Square Footage')
-        axs[1].legend()
+        ax.scatter(self.main_data['SquareFootage'], self.main_data['MaxRent'], color='grey')
+        ax.plot(X_test, y_pred, color='red', linewidth=3, label='Predicted Rent')
+        ax.set_xlabel('Square Footage')
+        ax.set_ylabel('Max Rent')
+        ax.set_title('Rent vs. Square Footage')
 
-        # Display the plots side by side
+
+    def correlation_matrix(self, ax):
+        corr_matrix = self.main_data.corr()
+        sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap='coolwarm', ax=ax)
+        ax.set_title('Correlation Matrix')
+
+    def flexible_plotting_system(self):
+        plot_functions = [self.histogram, self.scatter_plot, self.correlation_matrix]
+        num_plots = len(plot_functions)
+        cols = 2  
+        rows = math.ceil(num_plots / cols)
+
+        fig, axs = plt.subplots(rows, cols, figsize=(cols * 6, rows * 6))
+
+        for i, plot_func in enumerate(plot_functions):
+            if rows > 1:
+                ax = axs[i // cols, i % cols]
+            else:  # If there's only one row, axs is a 1D array
+                ax = axs[i]
+            plot_func(ax)
+        
+        plt.tight_layout()
         plt.show()
 
+    def main(self):
+        self.prepare_data()
+        with pd.option_context('display.max_rows', None, 'display.max_columns', None): print(self.main_data.describe())
+        self.flexible_plotting_system()
+
 if __name__ == '__main__':
-    stat = basic_stat_models('../data/processed_data/austin_tx_processed.csv')
+    stat = BasicStatModels('../data/processed_data/seattle_wa_processed.csv')
     stat.main()
+

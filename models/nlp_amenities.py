@@ -88,7 +88,7 @@ class nlp_processor:
 
     def output_vector(self,categories):
        
-        base_vector = np.zeros(len(self.categories))
+        base_vector = np.zeros(len(self.categories), dtype=int)
         category_len = {key: len(items) for key,items in categories.items() if key != "Others"}
 
         for i, category in enumerate(sorted(self.categories)):

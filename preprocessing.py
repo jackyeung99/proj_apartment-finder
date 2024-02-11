@@ -5,6 +5,7 @@ from geopy.exc import GeocoderTimedOut, GeocoderUnavailable
 import pandas as pd
 import os
 import ast 
+from ast import literal_eval
 
 class Preprocessing:
     def __init__(self, city, state):
@@ -36,21 +37,37 @@ class Preprocessing:
         label_encoder = LabelEncoder()
         self.gen_info['Neighborhood_Label'] = label_encoder.fit_transform(self.gen_info['Neighborhood'])
         self.gen_info['VerifiedListing'] = self.gen_info['VerifiedListing'].apply(lambda x: 1 if x == 'Verified Listing' else 0)
+        self.gen_info['ReviewScore'] = self.gen_info['ReviewScore'].apply(
+            lambda x: 0 if x == "No reviews" else float(x)
+        )
 
     def process_amenities(self):
-        # Convert amenities from string representations to lists, clean up, and convert to vectors
-        self.gen_info['Amenities'] = self.gen_info['Amenities'].apply(ast.literal_eval)
-        self.gen_info['Amenities'] = self.gen_info['Amenities'].apply(
-            lambda amenities_list: [amenity.replace('*', '').lower() for amenity in amenities_list]
-        )
-        self.gen_info['Amenities_Vector'] = self.gen_info['Amenities'].apply(
-            lambda x: self.nlp_processor.convert_amenities_to_vector(x)
-        )
+        # Process 'Amenities' in place, avoiding repeated 'apply'
+        self.gen_info['Amenities'] = self.gen_info['Amenities'].apply(lambda x: self.clean_and_vectorize_amenities(x))
+        self.expand_vectors()
+
+    def clean_and_vectorize_amenities(self, amenities):
+        if isinstance(amenities, str):
+            amenities = literal_eval(amenities)
+        cleaned_amenities = [amenity.replace('*', '').lower() for amenity in amenities]
+        return self.nlp_processor.convert_amenities_to_vector(cleaned_amenities)
+
+    def expand_vectors(self):
+        # Assuming 'Amenities_Vector' is now a list of vectors
+        expanded_df = self.gen_info['Amenities'].apply(pd.Series)
+        labels = ['Leisure', 'Technology', 'Services', 'Location', 'Fitness & Wellness', 'Safety & Security', 'Apartment_features', 'Appliances']
+        # Use meaningful labels if they match the vector size
+        if len(labels) == expanded_df.shape[1]:
+            expanded_df.columns = labels
+        else:
+            expanded_df.columns = [f'Vector_{i+1}' for i in expanded_df.columns]
+
+        # Merge expanded vectors back into the main DataFrame
+        self.gen_info = pd.concat([self.gen_info.drop('Amenities', axis=1), expanded_df], axis=1)
 
     def geocode_address(self, address, attempt=1, max_attempts=3):
         geolocator = Nominatim(user_agent="my_geocoder")
         try:
-            # Increase timeout to, e.g., 10 seconds
             location = geolocator.geocode(address, timeout=10)
             if location:
                 return location.latitude, location.longitude
@@ -72,7 +89,7 @@ class Preprocessing:
 
         # Iterate over the DataFrame and geocode each address
         for index, row in self.gen_info.iterrows():
-            lat, lon = self.geocode_address(row['Address'])
+            lat, lon = self.geocode_address(row['Address'] + f',{self.city},{self.state}')
             self.gen_info.at[index, 'Latitude'] = lat
             self.gen_info.at[index, 'Longitude'] = lon
 
@@ -84,13 +101,14 @@ class Preprocessing:
         self.process_addresses()
         # Merge DataFrames and prepare the final DataFrame for analysis
         final_df = pd.merge(self.gen_info, self.units, on='PropertyId', how='left')
-        final_df = final_df[['PropertyId','Latitude','Longitude','ReviewScore', 'Neighborhood_Label', 'Amenities_Vector', 'Baths', 'Beds', 'MaxRent', 'SquareFootage']].dropna()
+        final_df = final_df[['PropertyId','Latitude','Longitude','ReviewScore', 'Neighborhood_Label', 'Leisure', 'Technology', 'Services', 'Location', 'Fitness & Wellness', 'Safety & Security', 'Apartment_features', 'Appliances', 'Baths', 'Beds', 'MaxRent', 'SquareFootage']].dropna()
         final_df.to_csv(f'data/processed_data/{self.city}_{self.state}_processed.csv', index=False)
         # # Display the prepared DataFrame
         pd.set_option('display.max_columns', None)
-        print(final_df.head(40))
+        print(final_df.head(10))
 
 if __name__ == '__main__':
-    city, state = 'seattle', 'wa'
-    pp = Preprocessing(city, state)
-    pp.main()
+    cities = [('austin','tx'),('seattle','wa')]
+    for city in cities:
+        pp = Preprocessing(city[0], city[1])
+        pp.main()
