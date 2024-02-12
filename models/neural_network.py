@@ -38,9 +38,9 @@ class NeuralNetworkRegressor:
 
     def fit(self, df, epochs=10, batch_size=32, validation_split=0.2):
         # handle outliers
-        lower_cap = df[self.target_column].quantile(0.05)
-        upper_cap = df[self.target_column].quantile(0.95)
-        df[self.target_column] = df[self.target_column].clip(lower_cap, upper_cap)
+        # lower_cap = df[self.target_column].quantile(0.05)
+        # upper_cap = df[self.target_column].quantile(0.95)
+        # df[self.target_column] = df[self.target_column].clip(lower_cap, upper_cap)
 
         X = df.drop(self.target_column, axis=1)
         y = df[self.target_column]
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     numeric_features = ['Latitude', 'Longitude', 'ReviewScore', 'Leisure', 'Technology', 'Services', 'Location', 'Fitness & Wellness', 'Safety & Security', 'Apartment_features', 'Appliances', 'Baths', 'Beds', 'SquareFootage']
     categorical_features = ['Neighborhood_Label']
     target_column = 'MaxRent'
-    df = pd.read_csv('../data/processed_data/austin_tx_processed.csv')
+    df = pd.read_csv('../data/processed_data/seattle_wa_processed.csv')
     # Initialize the model
     nn_model = NeuralNetworkRegressor(numeric_features, categorical_features, target_column)
 
