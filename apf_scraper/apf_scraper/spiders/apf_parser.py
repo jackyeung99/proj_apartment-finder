@@ -40,10 +40,11 @@ class ApfParserSpider(scrapy.Spider):
             yield Request(
                 url=url,
                 callback=self.parse,
-                meta=dict(
-			    playwright = True,
-			    playwright_include_page = True, 
-		    ))
+                meta={
+                'playwright': True,
+                'playwright_include_page': True,
+                }
+                )
         
 
     async def parse(self, response, **kwargs):

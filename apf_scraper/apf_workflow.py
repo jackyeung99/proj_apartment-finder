@@ -17,6 +17,10 @@ def run_spiders(city, state):
     print(f"runtime: {end-start}")
     
 if __name__ == "__main__":
-    city = sys.argv[1]
-    state = sys.argv[2]
-    run_spiders(city, state)
+    # city = sys.argv[1]
+    # state = sys.argv[2]
+    # run_spiders(city, state)
+
+    city_list = [('san-diego','ca'),('new-york','ny'),('miami','fl'),('portland','or')]
+    for city,state in city_list:
+        run_spiders(city,state)

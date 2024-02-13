@@ -47,19 +47,19 @@ PLAYWRIGHT_LAUNCH_OPTIONS = {
     'headless': True,
 }
 
-PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT = (
-    10 * 1000
-)
+# PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT = (
+#     15 * 1000
+# )
 
 # Download timeout in seconds (adjust as needed)
-DOWNLOAD_TIMEOUT = 10
+DOWNLOAD_TIMEOUT = 20
 
 BOT_NAME = "apf_scraper"
 
 SPIDER_MODULES = ["apf_scraper.spiders"]
 NEWSPIDER_MODULE = "apf_scraper.spiders"
 
-pa
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 

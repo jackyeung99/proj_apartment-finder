@@ -108,7 +108,7 @@ class Preprocessing:
         print(final_df.head(10))
 
 if __name__ == '__main__':
-    cities = [('austin','tx'),('seattle','wa')]
+    cities = [('san-diego','ca'),('new-york','ny'),('miami','fl'),('portland','or')]
     for city in cities:
         pp = Preprocessing(city[0], city[1])
         pp.main()
