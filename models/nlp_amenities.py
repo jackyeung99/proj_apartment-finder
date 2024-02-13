@@ -7,6 +7,7 @@ from nltk.corpus import stopwords
 from gensim.models import KeyedVectors
 from gensim.models.phrases import Phrases, Phraser
 from scipy.spatial.distance import cosine
+import pandas as pd 
 import os
 
 
@@ -103,6 +104,7 @@ class nlp_processor:
         categorized_items = self.categorize_items(input_list)
         vector = self.output_vector(categorized_items)
         return vector
+    
 
     def main(self):
         categorized_items = self.categorize_items()

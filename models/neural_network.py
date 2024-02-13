@@ -53,7 +53,7 @@ class NeuralNetworkRegressor:
         self.X_test = self.preprocessor.transform(X_test_raw)
         
         # Save y_test as an attribute for later use in evaluation
-        self.y_test = y_test  # This line is added to ensure y_test is available as an attribute
+        self.y_test = y_test  
         
         # Further split X_train and y_train into training and validation sets
         X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=validation_split, random_state=42)
