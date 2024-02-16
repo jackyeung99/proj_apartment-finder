@@ -21,6 +21,6 @@ if __name__ == "__main__":
     # state = sys.argv[2]
     # run_spiders(city, state)
 
-    city_list = [('austin','tx'),('miami','fl'),('portland','or'),('san-diego','ca'),('san-francisco','ca'),('seattle','wa')]
+    city_list = [('san-diego','ca'),('san-francisco','ca'),('seattle','wa')]
     for city,state in city_list:
         run_spiders(city,state)
