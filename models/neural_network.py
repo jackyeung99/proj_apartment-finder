@@ -84,8 +84,6 @@ if __name__ == '__main__':
     df = pd.read_csv('../data/processed_data/seattle_wa_processed.csv')
     # Initialize the model
     nn_model = NeuralNetworkRegressor(numeric_features, categorical_features, target_column)
-
-    # Assuming `df` is your DataFrame
     nn_model.fit(df)
 
     # Evaluate the model on the test set
