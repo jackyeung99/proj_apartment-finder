@@ -17,6 +17,7 @@ class ApfGeneralInfoItem(scrapy.Item):
     ReviewScore = scrapy.Field()
     VerifiedListing = scrapy.Field()
     Amenities = scrapy.Field()
+    is_single_unit = scrapy.Field()
 
 class ApfUnitItem(scrapy.Item):
     PropertyId = scrapy.Field()
