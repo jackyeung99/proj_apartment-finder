@@ -4,7 +4,7 @@ import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class GeoCoder:
-    def __init__(self, user_agent="my_geocoder", max_workers=5):
+    def __init__(self, user_agent="address converter", max_workers=5):
         self.geolocator = Nominatim(user_agent=user_agent)
         self.max_workers = max_workers
         logging.basicConfig(level=logging.INFO)

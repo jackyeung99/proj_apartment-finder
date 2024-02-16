@@ -1,14 +1,4 @@
 Baths,Beds,MaxRent,Model,PropertyId,SquareFootage
-1,1,5175,1 Bedroom / 1 Bathroom,c5thyge,601
-2,2,2280,2 Bed 2 Bath - C,3w6dcsd,
-2,2,2348,2 Bed 2 Bath - C,3w6dcsd,
-1,2,5300,2 Bed 1 Bath - J,3w6dcsd,697
-2,3,7000,3 Bed 2 Bath - B,3w6dcsd,977
-2,4,1944,Private Bedroom in Shared 4 Bed 2 Bath - A,3w6dcsd,180
-2,4,1970,Private Bedroom in Shared 4 Bed 2 Bath - B,3w6dcsd,179
-2,4,2016,Private Bedroom in Shared 4 Bed 2 Bath - D,3w6dcsd,
-2,4,2153,Private Bedroom in Shared 4 Bed 2 Bath - H,3w6dcsd,
-2,4,8200,Private Bedroom in Shared 4 Bed 2 Bath - H - UF,3w6dcsd,"1,084"
 1,0,3453,Studio / 1 Bathroom,bzg2v49,553
 1,0,3687,Studio / 1 Bathroom,bzg2v49,529
 1,0,4250,Studio / 1 Bathroom,bzg2v49,495
@@ -21,68 +11,85 @@ Baths,Beds,MaxRent,Model,PropertyId,SquareFootage
 2,2,6967,Flex 3 / 2 Bathroom,bzg2v49,"1,274"
 2,2,7187,Flex 3 / 2 Bathroom,bzg2v49,"1,221"
 2,2,6999,2 Bedroom / 2 Bathroom,bzg2v49,"1,276"
+2,3,8195,3 Bedroom / 2 Bathroom,bzg2v49,"1,221"
 2,3,8400,3 Bedroom / 2 Bathroom,bzg2v49,"1,218"
 2,3,9324,3 Bedroom / 2 Bathroom,bzg2v49,"1,218"
 3,4,13999,4 Bedroom / 3 Bathroom,bzg2v49,"2,087"
-1,1,4420,1 Bedroom / 1 Bathroom,yh2kx5r,
-2,3,5996,3 Bedroom / 2 Bathroom,yh2kx5r,
-1,0,3714,Alcove Studio / 1 Bathroom,edbpf5p,
-1,0,3496,Studio / 1 Bathroom,edbpf5p,
-2,2,5700,2 Bedroom / 2 Bathroom,edbpf5p,
-2,2,6596,2 Bedroom / 2 Bathroom,edbpf5p,
-1,0,3764,Studio E1A,938hg25,432
-1,1,4197,One Bedroom A1E,938hg25,587
-1,1,4391,One Bedroom A1E,938hg25,587
-1,1,4365,One Bedroom A1H,938hg25,675
-1,1,4620,One Bedroom A1H,938hg25,675
+1,0,3744,Studio E1A,938hg25,432
+1,1,3833,One Bedroom A1A,938hg25,521
+1,1,4177,One Bedroom A1E,938hg25,587
+1,1,4371,One Bedroom A1E,938hg25,587
+1,1,4236,One Bedroom A1E,938hg25,567
+1,1,4589,One Bedroom A1E,938hg25,567
+1,1,4265,One Bedroom A1H,938hg25,675
+1,1,4520,One Bedroom A1H,938hg25,675
+1,1,4604,One Bedroom A1H,938hg25,675
+1,1,4434,One Bedroom A1C,938hg25,567
+1,1,4441,One Bedroom A1C,938hg25,567
+1,1,4294,One Bedroom A1C,938hg25,567
+1,1,4559,One Bedroom A1J,938hg25,675
+1,1,4956,One Bedroom A1J,938hg25,675
 1,1,4593,One Bedroom A1P,938hg25,700
-1,1,4733,One Bedroom A1P,938hg25,700
-1,1,4659,One Bedroom A1J,938hg25,675
-1,1,4791,One Bedroom A1Z,938hg25,874
-1.5,1,5596,One Bedroom A1.5A,938hg25,957
-1,1,5735,One Bedroom A1D,938hg25,587
-1,1,3853,One Bedroom A1A,938hg25,521
-1,1,4534,One Bedroom A1C,938hg25,567
-1,1,4541,One Bedroom A1C,938hg25,567
-1,1,4394,One Bedroom A1C,938hg25,567
-1.5,1,5927,One Bedroom A1.5B,938hg25,965
-1.5,1,6213,One Bedroom A1.5B,938hg25,965
-1,1,3902,One Bedroom A1M,938hg25,683
-1,1,4216,One Bedroom A1K,938hg25,678
-2,2,6469,Two Bedroom B2F-W,938hg25,"1,085"
-2,2,6656,Two Bedroom B2J,938hg25,"1,290"
-2,2,7512,Two Bedroom B2K,938hg25,"1,343"
-2,2,7174,Two Bedroom B2K,938hg25,"1,343"
-2,2,7481,Two Bedroom B2K,938hg25,"1,343"
-2,2,6590,Two Bedroom B2F,938hg25,"1,085"
-2,3,8012,Three Bedroom C2B-W,938hg25,"1,290"
-2,3,7626,Three Bedroom C2A,938hg25,"1,275"
-2,3,7688,Three Bedroom C2A,938hg25,"1,275"
-2,3,8043,Three Bedroom C2B,938hg25,"1,290"
-1,0,3920,Studio / 1 Bathroom,q3856xz,460
-1,1,4259,1 Bedroom / 1 Bathroom,q3856xz,662
-1,1,4302,1 Bedroom / 1 Bathroom,q3856xz,555
-1,1,4865,1 Bedroom / 1 Bathroom,q3856xz,610
-2,2,6708,Flex 3 / 2 Bathroom,q3856xz,"1,035"
-2,2,6510,2 Bedroom / 2 Bathroom,q3856xz,880
+1,1,4873,One Bedroom A1P,938hg25,700
+1,1,5715,One Bedroom A1D,938hg25,587
+1.5,1,5857,One Bedroom A1.5B,938hg25,965
+1.5,1,6143,One Bedroom A1.5B,938hg25,965
+1,1,3997,One Bedroom A1M,938hg25,683
+1,1,4321,One Bedroom A1K,938hg25,678
+2,2,6462,Two Bedroom B2F-W,938hg25,"1,085"
+2,2,6556,Two Bedroom B2J,938hg25,"1,290"
+2,2,7412,Two Bedroom B2K,938hg25,"1,343"
+2,2,6934,Two Bedroom B2K,938hg25,"1,343"
+2,2,7601,Two Bedroom B2K,938hg25,"1,343"
+2,2,7113,Two Bedroom B2K,938hg25,"1,343"
+2,2,6567,Two Bedroom B2F,938hg25,"1,085"
+2,3,8052,Three Bedroom C2B-W,938hg25,"1,290"
+2,3,7666,Three Bedroom C2A,938hg25,"1,275"
+2,3,7728,Three Bedroom C2A,938hg25,"1,275"
+2,3,8083,Three Bedroom C2B,938hg25,"1,290"
+1,1,5685,1 Bedroom / 1 Bathroom,c5thyge,588
+1,1,5265,1 Bedroom / 1 Bathroom,c5thyge,601
+1,0,3815,Studio / 1 Bathroom,q3856xz,460
+1,1,4302,1 Bedroom / 1 Bathroom,q3856xz,662
+1,1,4344,1 Bedroom / 1 Bathroom,q3856xz,555
+1,1,4910,1 Bedroom / 1 Bathroom,q3856xz,610
+2,2,2280,2 Bed 2 Bath - C,3w6dcsd,
+2,2,2348,2 Bed 2 Bath - C,3w6dcsd,
+1,2,5300,2 Bed 1 Bath - J,3w6dcsd,697
+2,3,7000,3 Bed 2 Bath - B,3w6dcsd,977
+2,4,1870,Private Bedroom in Shared 4 Bed 2 Bath - B,3w6dcsd,179
+2,4,1970,Private Bedroom in Shared 4 Bed 2 Bath - B,3w6dcsd,179
+2,4,1944,Private Bedroom in Shared 4 Bed 2 Bath - A,3w6dcsd,180
+2,4,2014,Private Bedroom in Shared 4 Bed 2 Bath - E,3w6dcsd,
+2,4,2016,Private Bedroom in Shared 4 Bed 2 Bath - D,3w6dcsd,
+2,4,2153,Private Bedroom in Shared 4 Bed 2 Bath - H,3w6dcsd,
+2,4,8200,Private Bedroom in Shared 4 Bed 2 Bath - H - UF,3w6dcsd,"1,084"
+2,3,5996,3 Bedroom / 2 Bathroom,yh2kx5r,
+1,1,5534,"1 bed, 1 bath",z49x5jx,
+1,1,5250,"1 bed, 1 bath",z49x5jx,
+1,2,6435,"2 bed, 1 bath",z49x5jx,
+1,2,6500,2B1b   2 Bedroom 1 Bath,z49x5jx,
+2,2,6650,"2 bed, 2 bath",z49x5jx,
+3,3,8249,"3 bed, 3 bath",z49x5jx,
 1,0,2800,Studio / 1 Bathroom,xswy1sq,500
-1,0,3250,Alcove Studio / 1 Bathroom,xswy1sq,575
-1,0,3295,Jr 1 Bedroom / 1 Bathroom,xswy1sq,500
-1,0,3700,Jr 1 Bedroom / 1 Bathroom,xswy1sq,575
+1,0,2933,Alcove Studio / 1 Bathroom,xswy1sq,575
+1,0,3392,Jr 1 Bedroom / 1 Bathroom,xswy1sq,575
 1,1,3570,1 Bedroom / 1 Bathroom,xswy1sq,650
 1,1,4625,1 Bedroom / 1 Bathroom,xswy1sq,700
 1,1,4767,1 Bedroom / 1 Bathroom,xswy1sq,950
 1,1,4162,Flex 2 / 1 Bathroom,xswy1sq,925
 1,1,5425,Flex 2 / 1 Bathroom,xswy1sq,812
-1,1,5404,Jr 4 / 1 Bathroom,xswy1sq,975
+1,1,5037,Jr 4 / 1 Bathroom,xswy1sq,975
 1,2,4629,Flex 3 / 1 Bathroom,xswy1sq,850
 3,3,12829,Flex 4 / 3 Bathroom,xswy1sq,
-1,1,5534,"1 bed, 1 bath",z49x5jx,
-1,1,4812,"1 bed, 1 bath",z49x5jx,
-2,2,6096,"2 bed, 2 bath",z49x5jx,
-3,3,8249,"3 bed, 3 bath",z49x5jx,
-1,1,5414,Jr 4 / 1 Bathroom,h26j1b1,728
-1,1,5504,Jr 4 / 1 Bathroom,h26j1b1,759
+1,0,3496,Studio / 1 Bathroom,edbpf5p,
+1,0,3714,Alcove Studio / 1 Bathroom,edbpf5p,
+1,1,5337,1 Bedroom+,edbpf5p,
+2,2,5700,2 Bedroom / 2 Bathroom,edbpf5p,
+2,2,6596,2 Bedroom / 2 Bathroom,edbpf5p,
+1,1,5669,Jr 4 / 1 Bathroom,h26j1b1,728
+1,1,5759,Jr 4 / 1 Bathroom,h26j1b1,759
+1,1,4850,1 Bedroom / 1 Bathroom,h26j1b1,591
 1,0,3700,Studio / 1 Bathroom,7tc4rkx,
 1,0,3800,Studio / 1 Bathroom,7tc4rkx,
 1,0,4200,Alcove Studio / 1 Bathroom,7tc4rkx,
@@ -91,18 +98,18 @@ Baths,Beds,MaxRent,Model,PropertyId,SquareFootage
 1,1,4086,1 Bedroom / 1 Bathroom,7tc4rkx,
 1,1,4271,1 Bedroom / 1 Bathroom,7tc4rkx,
 1,1,4364,1 Bedroom / 1 Bathroom,7tc4rkx,
+1,1,4638,1 Bedroom / 1 Bathroom,7tc4rkx,
 1,1,5107,1 Bedroom / 1 Bathroom,7tc4rkx,
 1,1,5322,1 Bedroom / 1 Bathroom,7tc4rkx,
 1,1,5650,1 Bedroom / 1 Bathroom,7tc4rkx,
-1,1,5200,1 Bedroom / 1 Bathroom,7tc4rkx,
 1,1,4900,1 Bedroom w/ HO / 1 Bathroom,7tc4rkx,
 1,2,7280,2 Bedroom / 1 Bathroom,7tc4rkx,
-1,0,3067,S3,9w36sk7,500
-1,0,3267,S3,9w36sk7,500
-1,0,3302,S3,9w36sk7,500
-1,0,3332,S3,9w36sk7,500
-1,0,3278,S5,9w36sk7,584
-1,0,3128,S5,9w36sk7,584
+1,0,3123,S3,9w36sk7,500
+1,0,3323,S3,9w36sk7,500
+1,0,3358,S3,9w36sk7,500
+1,0,3388,S3,9w36sk7,500
+1,0,3334,S5,9w36sk7,584
+1,0,3184,S5,9w36sk7,584
 1,1,3686,A4,9w36sk7,610
 1,1,3781,A4,9w36sk7,610
 1,1,3830,A8,9w36sk7,666
@@ -110,263 +117,83 @@ Baths,Beds,MaxRent,Model,PropertyId,SquareFootage
 1,1,4055,A8,9w36sk7,666
 1,1,3925,A8,9w36sk7,666
 1,1,3790,A7,9w36sk7,659
+1,1,3515,A2,9w36sk7,590
+1,1,3400,A2,9w36sk7,590
+1,1,3526,A2,9w36sk7,590
 1,1,3550,A3,9w36sk7,595
 1,1,3465,A3,9w36sk7,595
 1,1,3090,A1,9w36sk7,561
-1,1,3400,A2,9w36sk7,590
 1,1,3220,A5,9w36sk7,618
 1,1,3475,A5,9w36sk7,618
-1,2,4449,B1,9w36sk7,822
-1,2,4718,B3,9w36sk7,875
-2,2,4894,B11,9w36sk7,"1,003"
-2,2,4919,B11,9w36sk7,"1,003"
-2,2,5079,B10,9w36sk7,998
+1,2,3807,B1,9w36sk7,822
+1,2,4051,B3,9w36sk7,875
+2,2,5017,B11,9w36sk7,"1,003"
+2,2,4441,B8,9w36sk7,915
+2,3,6872,C3,9w36sk7,"1,316"
 1,1,3942,1 Bedroom / 1 Bathroom,6het1tr,
 1,1,4250,1 Bedroom / 1 Bathroom,6het1tr,
 1,1,4837,1 Bedroom / 1 Bathroom,6het1tr,
-2,2,6096,2 Bedroom / 2 Bathroom,6het1tr,
 2,2,7305,2 Bedroom / 2 Bathroom,6het1tr,
 1,0,3320,Studio / 1 Bathroom,qf0bvez,
 1,0,3411,Studio / 1 Bathroom,qf0bvez,
-1,2,4978,2 Bedroom / 1 Bathroom,qf0bvez,664
-1,2,5045,2 Bedroom / 1 Bathroom,qf0bvez,664
+1,1,4538,1 Bedroom / 1 Bathroom,qf0bvez,
+1,2,4978,2 Bedroom / 1 Bathroom,qf0bvez,
 2,2,6094,2 Bedroom / 2 Bathroom,qf0bvez,
-1,0,4218,Studio / 1 Bathroom,zls36xz,
-1,0,4226,Studio / 1 Bathroom,zls36xz,
-1,0,4556,Alcove Studio / 1 Bathroom,zls36xz,
-1,1,5668,1 Bedroom / 1 Bathroom,zls36xz,
-1,1,5695,1 Bedroom / 1 Bathroom,zls36xz,
-1,1,5763,1 Bedroom / 1 Bathroom,zls36xz,
-1,1,5983,1 Bedroom / 1 Bathroom,zls36xz,
-1,1,6000,1 Bedroom / 1 Bathroom,zls36xz,
-1,1,6172,1 Bedroom / 1 Bathroom,zls36xz,
-1,1,5957,1 Bedroom / 1 Bathroom,zls36xz,
-1,1,5934,1 Bedroom / 1 Bathroom,zls36xz,
-1,0,3590,Murray Hill Marquis - Studio One Bathroom,73ymnfy,408
-1,0,3770,Murray Hill Marquis - Studio One Bathroom,73ymnfy,488
-1,0,3870,Murray Hill Marquis - Studio One Bathroom,73ymnfy,516
-1,0,4000,Murray Hill Marquis - Studio One Bathroom,73ymnfy,516
-1,0,3715,Murray Hill Marquis - Alcove Studio One Bathroom,73ymnfy,556
-1,0,4020,Murray Hill Marquis - Alcove Studio One Bathroom,73ymnfy,556
-1,0,4025,Murray Hill Marquis - Alcove Studio One Bathroom,73ymnfy,556
-1,1,4520,Murray Hill Marquis - 1 Bedroom One Bathroom,73ymnfy,687
-1,0,3611,Studio / 1 Bathroom,6z0przr,460
-1,0,3440,Studio / 1 Bathroom,6z0przr,419
-1,1,3721,1 Bedroom / 1 Bathroom,6z0przr,575
-1,1,3960,1 Bedroom / 1 Bathroom,6z0przr,563
-1,1,4005,1 Bedroom / 1 Bathroom,6z0przr,672
+1,0,3666,Studio / 1 Bathroom,6z0przr,460
+1,0,3495,Studio / 1 Bathroom,6z0przr,419
+1,1,3782,1 Bedroom / 1 Bathroom,6z0przr,575
+1,1,4025,1 Bedroom / 1 Bathroom,6z0przr,563
+1,1,3995,1 Bedroom / 1 Bathroom,6z0przr,672
 1.5,2,5141,2 Bedroom / 1.5 Bathroom,6z0przr,887
 2,2,5197,2 Bedroom / 2 Bathroom,6z0przr,838
-2,2,5473,2 Bedroom / 2 Bathroom,6z0przr,883
-2,2,5280,Two Bedroom Pod Pad Standard,c6e9d5d,550
-1,0,4160,Studio,rlcl211,572
+2,2,5463,2 Bedroom / 2 Bathroom,6z0przr,883
+1,0,4218,Studio / 1 Bathroom,zls36xz,
+1,0,4285,Studio / 1 Bathroom,zls36xz,
+1,0,4428,Alcove Studio / 1 Bathroom,zls36xz,
+1,1,5538,1 Bedroom / 1 Bathroom,zls36xz,
+1,1,5565,1 Bedroom / 1 Bathroom,zls36xz,
+1,1,5632,1 Bedroom / 1 Bathroom,zls36xz,
+1,1,5869,1 Bedroom / 1 Bathroom,zls36xz,
+1,1,5983,1 Bedroom / 1 Bathroom,zls36xz,
+1,1,6172,1 Bedroom / 1 Bathroom,zls36xz,
+1,1,5957,1 Bedroom / 1 Bathroom,zls36xz,
+1,1,5800,1 Bedroom / 1 Bathroom,zls36xz,
+1,0,3475,Murray Hill Marquis - Studio One Bathroom,73ymnfy,408
+1,0,3655,Murray Hill Marquis - Studio One Bathroom,73ymnfy,488
+1,0,3755,Murray Hill Marquis - Studio One Bathroom,73ymnfy,516
+1,0,3885,Murray Hill Marquis - Studio One Bathroom,73ymnfy,516
+1,0,3680,Murray Hill Marquis - Alcove Studio One Bathroom,73ymnfy,556
+1,0,3985,Murray Hill Marquis - Alcove Studio One Bathroom,73ymnfy,556
+1,0,3990,Murray Hill Marquis - Alcove Studio One Bathroom,73ymnfy,556
+1,1,4625,Murray Hill Marquis - 1 Bedroom One Bathroom,73ymnfy,687
+1,2,5675,JAMES MARQUIS - 2 Bedrooms One Bathroom,73ymnfy,788
 1,0,3720,Studio,rlcl211,483
+1,0,4160,Studio,rlcl211,572
 1,0,4110,Studio,rlcl211,572
 1,0,4230,Studio,rlcl211,579
 1,0,3955,Studio,rlcl211,492
-1,1,4780,1 Bedroom/1 Bath,rlcl211,786
-1,1,4830,1 Bedroom/1 Bath,rlcl211,786
-1,1,4840,1 Bedroom/1 Bath,rlcl211,792
-1,1,4850,1 Bedroom/1 Bath,rlcl211,785
-1,1,4855,1 Bedroom/1 Bath,rlcl211,792
-1,1,4860,1 Bedroom/1 Bath,rlcl211,785
-1,1,4885,1 Bedroom/1 Bath,rlcl211,653
-1,1,5030,1 Bedroom/1 Bath,rlcl211,802
+1,1,4805,1 Bedroom/1 Bath,rlcl211,803
+1,1,4880,1 Bedroom/1 Bath,rlcl211,786
+1,1,4940,1 Bedroom/1 Bath,rlcl211,792
+1,1,4950,1 Bedroom/1 Bath,rlcl211,785
+1,1,4955,1 Bedroom/1 Bath,rlcl211,792
+1,1,4960,1 Bedroom/1 Bath,rlcl211,785
+1,1,4985,1 Bedroom/1 Bath,rlcl211,653
 1,1,5080,1 Bedroom/1 Bath,rlcl211,717
-1,1,4900,1 Bedroom/1 Bath,rlcl211,775
-1,1,4870,1 Bedroom/1 Bath,rlcl211,786
 1,1,5070,1 Bedroom/1 Bath,rlcl211,802
+1,1,4870,1 Bedroom/1 Bath,rlcl211,786
 1,1,5085,1 Bedroom/1 Bath,rlcl211,785
-1,1,4895,1 Bedroom/1 Bath,rlcl211,775
 1,1,4915,1 Bedroom/1 Bath,rlcl211,810
-2,2,6565,2 Bedroom/2 Bath,rlcl211,"1,142"
+1,1,4895,1 Bedroom/1 Bath,rlcl211,775
+1,1,4945,1 Bedroom/1 Bath,rlcl211,785
+1,1,4905,1 Bedroom/1 Bath,rlcl211,792
 2,2,6375,2 Bedroom/2 Bath,rlcl211,"1,045"
-2,2,6810,2 Bedroom/2 Bath,rlcl211,"1,133"
-2,2,7060,2 Bedroom/2 Bath,rlcl211,"1,091"
+2,2,6960,2 Bedroom/2 Bath,rlcl211,"1,130"
 2,2,6995,2 Bedroom/2 Bath,rlcl211,"1,091"
-2,2,6595,2 Bedroom/2 Bath,rlcl211,"1,095"
 1.5,4,1729,Private Bedroom in Shared 4 Bed 1.5 Bath - A,qfl5mvw,170
-2,5,1672,Private Bedroom in Shared 5 Bed 2 Bath - B,qfl5mvw,
-2,5,1955,Private Bedroom in Shared 5 Bed 2 Bath - B,qfl5mvw,
-1,0,3448,Studio E1X,b815kt8,557
-1,0,3433,Studio E1X,b815kt8,557
-1,0,3752,Studio E1YJ,b815kt8,675
-1,0,4096,Studio E1YJ,b815kt8,675
-1,0,3771,Studio E1YI,b815kt8,636
-1,0,3851,Studio E1YI,b815kt8,636
-1,0,3653,Studio E1YD,b815kt8,591
-1,0,3447,Studio E1J,b815kt8,473
-1,0,3886,Studio E1Y,b815kt8,575
-1,0,4003,Studio E1YG,b815kt8,618
-1,0,4127,Studio E1YU,b815kt8,818
-1,0,3786,Studio E1U,b815kt8,533
-1,0,3663,Studio E1Z,b815kt8,576
-1,0,3814,Studio E1YL,b815kt8,686
-1,0,3581,Studio E1F,b815kt8,464
-1,0,3492,Studio E1F,b815kt8,464
-1,0,3652,Studio E1P,b815kt8,487
-1,0,3661,Studio E1P,b815kt8,487
-1,0,4006,Studio E1YC,b815kt8,583
-1,0,3968,Studio E1YW,b815kt8,825
-1,0,4272,Studio E1ZB,b815kt8,943
-1,1,4364,One Bedroom A1D,b815kt8,818
-1,1,4993,One Bedroom A1C,b815kt8,711
-1,1,5024,One Bedroom A1C,b815kt8,711
-1,1,4789,One Bedroom A1A,b815kt8,674
-1,1,4863,One Bedroom A1A,b815kt8,674
-1,0,1580,Semi - Private Room,nh5b4en,200
-1,0,1780,Semi - Private Room,nh5b4en,225
-1,0,2580,Studio Basic & Ensuite Bath,nh5b4en,225
-1,0,2380,Studio Basic & Ensuite Bath,nh5b4en,250
-1,0,2380,Studio Basic & Ensuite Bath,nh5b4en,270
-1,0,2580,Studio Basic & Ensuite Bath,nh5b4en,250
-1,0,2580,Studio Basic & Ensuite Bath,nh5b4en,270
-1,1,2700,1 BR / 1 BA,mvdbsxl,750
-1,1,2800,1 BR / 1 BA,mvdbsxl,850
-1,2,3850,2 BR / 1 BA,mvdbsxl,"1,000"
-1,4,4400,3 BR / 1 BA,mvdbsxl,"1,400"
-1,0,5493,Waterline 2: S3,ewlwn1n,597
-1,0,5679,Waterline 2: S3,ewlwn1n,597
-1,0,6353,Waterline 2: S3,ewlwn1n,597
-1,0,4969,Waterline 2: S5a,ewlwn1n,515
-1,0,5605,Waterline 2: S2,ewlwn1n,639
-1,0,5997,Waterline 2: S2,ewlwn1n,657
-1,0,5997,Waterline 2: S2,ewlwn1n,642
-1,0,6192,Waterline 2: S2,ewlwn1n,657
-1,0,6112,Waterline 2: S4,ewlwn1n,575
-1,1,7090,Waterline 1: A3,ewlwn1n,794
-1,1,8291,Waterline 1: A3,ewlwn1n,773
-1,1,6858,Waterline 2: A6,ewlwn1n,843
-1,1,7310,Waterline 3: A1,ewlwn1n,786
-1,1,7455,Waterline 2: A16,ewlwn1n,907
-1,1,7817,Waterline 2: A16,ewlwn1n,907
-1,1,7544,Waterline 1: A4,ewlwn1n,874
-1,1,7622,Waterline 1: A5,ewlwn1n,949
-1.5,1,7821,Waterline 3: A7,ewlwn1n,933
-1.5,1,7671,Waterline 3: A7,ewlwn1n,934
-1,1,7997,Waterline 1: A1,ewlwn1n,789
-1,1,8000,Waterline 2: A2,ewlwn1n,"1,000"
-1,1,8827,Waterline 2: A2,ewlwn1n,"1,000"
-1,1,8163,Waterline 1: A2,ewlwn1n,962
-1,1,8240,Waterline 1: A4b,ewlwn1n,960
-1,1,8785,Waterline 1: A4b,ewlwn1n,978
-1,1,8391,Waterline 2: A4,ewlwn1n,958
-1,1,8469,Waterline 1: A7,ewlwn1n,810
-1,1,8480,Waterline 2: A7,ewlwn1n,910
-1,1,8965,Waterline 2: A7,ewlwn1n,910
-1,1,8926,Waterline 1: A5b,ewlwn1n,970
-1,1,9376,Waterline 2: A8,ewlwn1n,"1,042"
-1,1,6634,Waterline 2: A12,ewlwn1n,832
-1,1,7349,Waterline 3: A12,ewlwn1n,814
-2,2,9795,Waterline 2: B6,ewlwn1n,"1,211"
-2,2,10231,Waterline 2: B6,ewlwn1n,"1,211"
-2,2,12730,Waterline 2: B6,ewlwn1n,"1,211"
-2,2,10163,Waterline 3: B13,ewlwn1n,"1,229"
-2,2,10320,Waterline 3: B11,ewlwn1n,"1,193"
-2,2,10373,Waterline 3: B17,ewlwn1n,"1,217"
-2,2,10918,Waterline 2: B22,ewlwn1n,"1,244"
-2,2,11467,Waterline 1: B7,ewlwn1n,"1,403"
-2.5,2,13925,Waterline 1: B6,ewlwn1n,"1,500"
-2,2,12403,Waterline 2: B24,ewlwn1n,"1,399"
-2,2,12558,Waterline 2: B24,ewlwn1n,"1,399"
-2,2,13951,Waterline 2: B24,ewlwn1n,"1,399"
-2,2,11399,Waterline 2: B24,ewlwn1n,"1,399"
-2,2,11793,Waterline 2: B8,ewlwn1n,"1,253"
-2,2,12594,Waterline 2: B8,ewlwn1n,"1,253"
-2.5,2,12584,Waterline 2: B7,ewlwn1n,"1,569"
-2.5,2,15318,Waterline 1: B4,ewlwn1n,"1,603"
-2.5,2,17754,Waterline 1: B4,ewlwn1n,"1,660"
-2.5,2,13162,Waterline 2: B15,ewlwn1n,"1,344"
-2.5,2,13492,Waterline 2: B9,ewlwn1n,"1,386"
-2.5,2,15204,Waterline 2: B9,ewlwn1n,"1,386"
-2.5,2,14262,Waterline 2: B9,ewlwn1n,"1,386"
-2.5,2,14804,Waterline 2: B14,ewlwn1n,"1,344"
-2.5,2,15333,Waterline 2: B16,ewlwn1n,"1,554"
-2,2,11437,Waterline 3: B5,ewlwn1n,"1,099"
-2.5,3,17834,Waterline 2: C5,ewlwn1n,"1,713"
-3.5,3,24950,Waterline 3: C1,ewlwn1n,"1,953"
-1,0,2175,Double Room  (Shared),fze1f2r,260
-1,0,3250,Private Room,fze1f2r,250
-2,2,7545,2AS-6AS,sj9w7s4,944
-1,0,3492,Studio w/Alcove U,1wxy6j5,545
-1,0,3527,Studio w/Alcove Q,1wxy6j5,564
-1,0,3707,Studio w/Alcove Q,1wxy6j5,564
-1,0,3682,Studio w/Alcove T,1wxy6j5,550
-1,0,3627,Studio w/Alcove T,1wxy6j5,550
-1,0,3787,Studio w/Alcove J,1wxy6j5,600
-1,0,3592,Studio w/Home Office R,1wxy6j5,560
-1,0,3497,Studio w/Alcove N,1wxy6j5,581
-1,0,3492,Studio w/Alcove V,1wxy6j5,549
-1,0,3402,Studio w/Alcove V,1wxy6j5,549
-1,0,3637,Studio w/Alcove Y,1wxy6j5,582
-1,0,3467,Studio w/Alcove Y,1wxy6j5,582
-1,0,3592,Studio w/Alcove P,1wxy6j5,557
-1,0,3522,Studio w/Alcove C,1wxy6j5,589
-1,1,4608,One Bedroom w/Home Office F,1wxy6j5,781
-1,1,4663,One Bedroom w/Home Office F,1wxy6j5,781
-1,1,4733,One Bedroom w/Home Office F,1wxy6j5,781
-1,1,4798,One Bedroom W,1wxy6j5,867
-1,1,5028,One Bedroom W,1wxy6j5,851
-1,1,5203,One Bedroom W,1wxy6j5,851
-1,1,4763,One Bedroom w/Alcove E,1wxy6j5,782
-1,1,5003,One Bedroom I,1wxy6j5,833
-1,1,4658,One Bedroom I,1wxy6j5,833
-1,1,4563,One Bedroom L,1wxy6j5,667
-1,1,5073,One Bedroom M,1wxy6j5,867
-1,1,3400,Standard Single Room,h7zhfj1,260
-1,1,3600,Deluxe Single,h7zhfj1,260
-1,2,2225,Standard Double Room,h7zhfj1,272
-1,2,2325,Deluxe Double,h7zhfj1,272
-1,2,3800,3C,x1gnfjq,550
-1,2,3800,5F,x1gnfjq,560
-1,2,4600,64,x1gnfjq,600
-2,2,4800,1E,x1gnfjq,650
-1,1,3000,1 Bedroom / 1 Bathroom,zj5hyyy,220
-1,2,3600,2 Bedroom / 1 Bathroom,zj5hyyy,325
-1,2,4500,2 Bedroom / 1 Bathroom,zj5hyyy,375
-1,2,4600,2 Bedroom / 1 Bathroom,zj5hyyy,360
-1,0,4470,Studio,4nfseeh,415
-1,0,4830,Studio,4nfseeh,327
-1,0,5125,Studio,4nfseeh,415
-1,0,3990,Studio,4nfseeh,327
-1,1,6600,One Bedroom,4nfseeh,805
-1,1,7200,One Bedroom,4nfseeh,830
-1,0,3000,Studio / 1 Bathroom,6efh5yv,210
-1,2,5000,2 Bedroom / 1 Bathroom,6efh5yv,350
-1,2,6050,2 Bedroom / 1 Bathroom,6efh5yv,460
-1,3,5000,3 Bedroom / 1 Bathroom,6efh5yv,313
-1,3,6000,3 Bedroom / 1 Bathroom,6efh5yv,313
-1,2,3800,55-B Line 2 Bed 1 Bath,8vc8hj2,1
-1,3,5350,55-A Line 3 Bed 1 Bath,8vc8hj2,516
-1,3,5395,55-B Line 3 Bed 1 Bath,8vc8hj2,561
-1,0,1795,Apt 20,zmprv8x,350
-1,0,1845,Apt 10,zmprv8x,350
-1,1,4395,1BCNS,gvb2n6w,745
-1,1,4401,1BMNC,gvb2n6w,764
-1,1,4482,1BMNS,gvb2n6w,773
-1,1,4552,1BMNS,gvb2n6w,733
-1,2,4860,2BCJS,gvb2n6w,762
-1,2,4862,1BMYC,gvb2n6w,766
-1,3,5765,2BCYS,gvb2n6w,948
-1,3,5775,2BCYS,gvb2n6w,932
-1,3,5810,2BCYS,gvb2n6w,960
-1,3,5845,2BCYS,gvb2n6w,932
-1,3,5853,2BCYS,gvb2n6w,944
-1,3,5717,2BCYS,gvb2n6w,932
-1,4,7687,3BCYS,gvb2n6w,"1,148"
-1,4,7752,3BCYS,gvb2n6w,"1,148"
-1,0,2800,Studio / 1 Bathroom,2wq8nl9,300
-1,0,3500,Studio / 1 Bathroom,2wq8nl9,300
-1,1,3500,2 Bedroom / 1 Bathroom,2wq8nl9,420
-1,1,4500,1 Bedroom / 1 Bathroom,2wq8nl9,500
-1,2,3500,2 Bedroom / 1 Bathroom,2wq8nl9,420
-1,0,2777,Studio,sdr32b7,530
-1,1,3300,1 Bedroom,sdr32b7,667
-1,2,4000,1 Bedroom + Home Office,sdr32b7,870
-1,2,5000,2 Bedroom,sdr32b7,905
-1,3,2455,Apt Line 6,c49ywxd,"1,000"
-2,3,3360,Apt line 7,c49ywxd,"1,264"
-1.5,4,3385,Apt line 2,c49ywxd,"1,200"
-1,0,3299,Studio,svl05s4,350
-1,1,4500,1 Bedroom,svl05s4,400
-2,3,7500,3 Bedroom Duplex,svl05s4,800
+1,0,3443,Studio E1X,b815kt8,557
+1,0,3831,Studio E1X,b815kt8,557
+1,0,3763,Studio E1YJ,b815kt8,675
+1,0,4107,Studio E1YJ,b815kt8,675
+1,0,3766,Studio E1YI,b815kt8,636
+1,0,3846,Studio E1YI,b815kt8,636

@@ -2,9 +2,10 @@
 import scrapy
 from scrapy import Request
 from playwright.async_api import async_playwright
+import asyncio
 import logging
 import os
-import json
+import re
 from apf_scraper.items import ApfUnitItem, ApfGeneralInfoItem
 
 class ApfParserSpider(scrapy.Spider):
@@ -15,6 +16,7 @@ class ApfParserSpider(scrapy.Spider):
             'apf_scraper.pipelines.UnitPricesPipeline': 200,
         },
     }
+
 
     def __init__(self, city, state, *args, **kwargs):
         super(ApfParserSpider, self).__init__(*args, **kwargs)
@@ -31,9 +33,6 @@ class ApfParserSpider(scrapy.Spider):
         except FileNotFoundError:
             logging.critical(f'File not found: {links_file}')
             return []
-        except json.JSONDecodeError:
-            logging.error(f'Error decoding JSON from file: {links_file}')
-            return []
 
     def start_requests(self):
         for url in self.links:
@@ -43,9 +42,9 @@ class ApfParserSpider(scrapy.Spider):
                 meta={
                 'playwright': True,
                 'playwright_include_page': True,
-                }
-                )
+                })
         
+#  ======================= Scraping workflow/logic =======================
 
     async def parse(self, response, **kwargs):
         page = response.meta.get('playwright_page')
@@ -55,18 +54,17 @@ class ApfParserSpider(scrapy.Spider):
         
         try:
             general_info = await self.parse_general_info(page)
-            # Check if the property name indicates a single unit
-            if 'unit' in general_info['PropertyName'].lower():
-                # Log that a single unit page was found and then skip it
-                self.log(f"Single unit page detected, skipping URL: {response.url}", level=logging.INFO)
-                return  # This will exit the parse method and skip further processing
-            
             yield ApfGeneralInfoItem(**general_info)
-            
-            # If it's not a single unit, continue processing unit prices
-            unit_prices = await self.parse_unit_prices(page, general_info['PropertyId'])
-            for unit_price in unit_prices:
-                yield unit_price
+            print(general_info['PropertyName'])
+            if await page.query_selector('#pricingView'):
+                unit_prices = await self.parse_unit_prices(page, general_info['PropertyId'])
+                print(unit_prices)
+                for unit in unit_prices:
+                    yield ApfUnitItem(**unit)
+            else:
+                print('single unit encountered')
+                unit_price = await self.single_unit_price(page,general_info['PropertyId'])
+                yield ApfUnitItem(**unit_price)
 
         except Exception as e:
             self.log(f'An error occurred while parsing the page:{response.url} {str(e)}', level=logging.ERROR)
@@ -74,103 +72,103 @@ class ApfParserSpider(scrapy.Spider):
         finally:
             await page.close()
 
-
+#  ======================= Retrieve General Info  =======================
     async def parse_general_info(self, page):
-        property_name = (await page.text_content('#propertyName')).strip()
-        # Initialize address variable outside the conditional scope for broader accessibility
-        address = ''
-        if 'unit' in property_name.strip().lower():
-            # If 'unit' is in property_name, set address as everything before 'unit'
-            address = property_name.split('unit', 1)[0].strip()  # Splits at the first occurrence of 'unit' and takes the first part
-        else:
-            # If 'unit' is not in property_name, fetch address from the designated element
-            address = await page.text_content('#propertyAddressRow .delivery-address span')
+        coroutines = {
+        'property_name': page.text_content('#propertyName'),
+        'address': page.text_content('#propertyAddressRow .delivery-address span'),
+        'property_id': page.evaluate('''() => document.querySelector("body > div.mainWrapper > main").getAttribute("data-listingid")'''),
+        'neighborhood_link': page.get_attribute('#propertyAddressRow .neighborhoodAddress a', 'href'),
+        'neighborhood': page.text_content('#propertyAddressRow .neighborhoodAddress a'),
+        'reviews_element': page.text_content('span.reviewRating'),
+        'verification': page.text_content('#tooltipToggle span'),
+        'amenities_elements': page.query_selector_all('li.specInfo span')
+         }
 
-        property_id = await page.evaluate('''() => document.querySelector("body > div.mainWrapper > main").getAttribute("data-listingid")''')
-        property_url = page.url
-        neighborhood_link = (await page.get_attribute('#propertyAddressRow .neighborhoodAddress a', 'href')).strip()
-        neighborhood = (await page.text_content('#propertyAddressRow .neighborhoodAddress a')).strip()
-        reviews_element = await page.query_selector('span.reviewRating')
-        reviews = (await reviews_element.text_content()).strip() if reviews_element else 'No reviews'
-        verification = (await page.text_content('#tooltipToggle span')).strip()
+        results = await asyncio.gather(*coroutines.values(), return_exceptions=True)
+        results = {key: result if not isinstance(result, Exception) else None for key, result in zip(coroutines.keys(), results)}
 
-        # Loop through the selected elements and get their text content for amenities
-        amenities_elements = await page.query_selector_all('li.specInfo span')
-        amenities = [(await element.text_content()).strip() for element in amenities_elements]
+        amenities = []
+        if results['amenities_elements']:
+            amenities = [amenity.strip() for amenity in await asyncio.gather(*(elem.text_content() for elem in results['amenities_elements'])) if amenity]
 
-        return {
-            'PropertyName': property_name,
-            'PropertyId': property_id,
-            'PropertyUrl': property_url,
-            'Address': address,
-            'NeighborhoodLink': neighborhood_link,
-            'Neighborhood': neighborhood,
-            'ReviewScore': reviews,
-            'VerifiedListing': verification,
+        general_info = {
+            'PropertyName': results['property_name'].strip() if results['property_name'] else '',
+            'PropertyId': results['property_id'] if results['property_id'] else '',
+            'PropertyUrl': page.url,
+            'Address': results['address'].strip() if results['address'] else '',
+            'NeighborhoodLink': results['neighborhood_link'].strip() if results['neighborhood_link'] else '',
+            'Neighborhood': results['neighborhood'].strip() if results['neighborhood'] else '',
+            'ReviewScore': float(results['reviews_element'].strip()) if results['reviews_element'] else 0,
+            'VerifiedListing':  'verified' if results['verification'] else 'Un-verified',
             'Amenities': amenities
-        }
+            }
+        
+        return general_info
+    
+#  ======================= Retrieve Unit Pricing  =======================
+    async def single_unit_price(self,page,property_id):
+        detail_elements = await page.query_selector_all('.priceBedRangeInfoInnerContainer .rentInfoDetail')
+        detail_texts = await asyncio.gather(*[element.text_content() for element in detail_elements])
 
-    # async def single_unit_price(self,page,property_id):
-    #     details = ApfUnitItem(
-    #         PropertyId=property_id,
-    #         MaxRent=None,
-    #         Model= 'single_unit',
-    #         Beds=None,
-    #         Baths=None,
-    #         SquareFootage=None
-    #     )
+        pattern = re.compile(r'\d+(?:[,.]\d+)*')
+        numbers = []
+        for text in detail_texts:
+            if text:
+                extracted_numbers = pattern.findall(text.replace(',', ''))
+                numbers.extend(extracted_numbers)
 
-    #     # Use Playwright's query_selector method to grab each piece of information
-    #     rent_element = await page.query_selector('p.rentInfoDetail')
-    #     if rent_element:
-    #         details['MaxRent'] = await rent_element.text_content()
+        try:
+            max_rent = float(numbers[0]) if len(numbers) > 0 else None
+            beds = float(numbers[1]) if len(numbers) > 1 else None
+            baths = float(numbers[2]) if len(numbers) > 2 else None
+            square_footage = float(numbers[3]) if len(numbers) > 3 else None
 
-    #     bedrooms_element = await page.query_selector('div.priceBedRangeInfoInnerContainer:has(p.rentInfoLabel:has-text("Bedrooms")) p.rentInfoDetail')
-    #     if bedrooms_element:
-    #         details['Beds'] = await bedrooms_element.text_content()
+            # set threshold for which values can be none
+            if None in [max_rent, beds, baths, square_footage]:
+                raise ValueError("Missing details")
 
-    #     bathrooms_element = await page.query_selector('div.priceBedRangeInfoInnerContainer:has(p.rentInfoLabel:has-text("Bathrooms")) p.rentInfoDetail')
-    #     if bathrooms_element:
-    #         details['Baths'] = await bathrooms_element.text_content()
+            # fix me: return dictionary not unit item
+            return ApfUnitItem(
+                PropertyId=property_id,
+                MaxRent=max_rent,
+                Model='single_unit',
+                Beds=beds,
+                Baths=baths,
+                SquareFootage=square_footage
+            )
+        except (ValueError, IndexError) as e:
+            logging.error(f"Error processing details for property {property_id}: {e}")
+            return None
 
-    #     square_feet_element = await page.query_selector('div.priceBedRangeInfoInnerContainer:has(p.rentInfoLabel:has-text("Square Feet")) p.rentInfoDetail')
-    #     if square_feet_element:
-    #         details['SquareFootage'] = await square_feet_element.text_content()
-
-    #     # Clean up the extracted text, if necessary
-    #     for key in details:
-    #         if details[key]:
-    #             details[key] = details[key].strip()
-
-    #     return details
-
-
-    async def parse_unit_prices(self, page, property_id):
-        units = await page.query_selector_all('.unitContainer')
-        unique_apartments = set()
-        unit_items = []
-
-        for unit in units:
-            model = await unit.get_attribute('data-model')
-            max_rent = await unit.get_attribute('data-maxrent')
-            beds = await unit.get_attribute('data-beds')
-            baths = await unit.get_attribute('data-baths')
+    async def handle_unit(self,unit,property_id):
+            model, max_rent, beds, baths = await asyncio.gather(
+                unit.get_attribute('data-model'),
+                unit.get_attribute('data-maxrent'),
+                unit.get_attribute('data-beds'),
+                unit.get_attribute('data-baths')
+            )
 
             square_footage_element = await unit.query_selector('.sqftColumn span:nth-of-type(2)')
             square_footage = await square_footage_element.text_content() if square_footage_element else ''
-            unique_identifier = (property_id, max_rent, model, beds, baths, square_footage)
 
-            if unique_identifier not in unique_apartments:
-                unique_apartments.add(unique_identifier)
-                item = ApfUnitItem(
-                    PropertyId=property_id,
-                    MaxRent=max_rent,
-                    Model=model,
-                    Beds=beds,
-                    Baths=baths,
-                    SquareFootage=square_footage
-                )
-                unit_items.append(item)
-
+            return {'PropertyId':property_id,
+                'MaxRent': max_rent,
+                'Model': model,
+                'Beds':beds,
+                'Baths':baths,
+                'SquareFootage':square_footage}
+            
+    async def parse_unit_prices(self, page, property_id):
+        units = await page.query_selector_all('.unitContainer')
+        unit_items = []
+        unique_apartments = set()
+        for unit in units:
+            unit_item = await self.handle_unit(unit, property_id)
+            unique_id = tuple(unit_item.values())
+            if unique_id not in unique_apartments:
+                unique_apartments.add(unique_id)
+                unit_items.append(unit_item)
         return unit_items
+    
 
