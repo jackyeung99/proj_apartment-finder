@@ -72,13 +72,13 @@ class ProcessWorkflow:
 
 if __name__ == '__main__':
     
-    locations = [('austin', 'tx')]
+    locations = [('austin', 'tx'), ('san-diego', 'ca'), ('new-york', 'ny'),('san-francisco','ca'),('seattle','wa'),('portland','or'),('los-angeles','ca'),('chicago','il'),('miami','fl')]
     workflow = ProcessWorkflow()
-# , ('san-diego', 'ca'), ('new-york', 'ny')
+
     for city, state in locations:
         df = workflow.process_data(city, state)
         output_path = os.path.join('data', 'processed_data', f'{city}_{state}_processed.csv')
-        # df.to_csv(output_path, index=False)
+        df.to_csv(output_path, index=False)
         print(df.head(10))
         print(f'processed {city} {state}')
     

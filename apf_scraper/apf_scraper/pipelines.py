@@ -33,6 +33,29 @@ class BasePipeline:
         # Dynamically set the file name using spider attributes
         self.file_name = f'{spider.city}_{spider.state}_{self.file_name_suffix}'
         self.file_path = f'../data/{spider.city}_{spider.state}/{self.file_name}'
+        self.buffer = []  
+        self.batch_size = 50
+        self.file = open(self.file_path, 'w', newline='', encoding='utf-8')
+        self.writer = None
+
+    def close_spider(self, spider):
+        self.flush_buffer() 
+        self.file.close()
+
+    def process_item(self, item, spider):
+        if item.__class__.__name__ == self.item_class_name:
+            self.buffer.append(ItemAdapter(item).asdict())  # Add item to buffer
+            if len(self.buffer) >= self.batch_size:
+                self.flush_buffer()  # Write buffered items to file when batch size is reached
+        return item
+
+    def flush_buffer(self):
+        if not self.writer:
+            # Initialize the CSV writer and write the header if it's the first batch
+            self.writer = csv.DictWriter(self.file, fieldnames=self.buffer[0].keys())
+            self.writer.writeheader()
+        self.writer.writerows(self.buffer)  # Write all buffered items to the file
+        self.buffer.clear() 
         self.file = open(self.file_path, 'w', newline='', encoding='utf-8')
         self.writer = None  # Initialize the CSV writer
 

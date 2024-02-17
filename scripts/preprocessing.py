@@ -22,8 +22,8 @@ class Preprocessing:
     def encode_categories(self):
         # encode categorical data
         self.gen_info['Neighborhood_Label'] = LabelEncoder().fit_transform(self.gen_info['Neighborhood'])
-        self.gen_info['VerifiedListing'] = (self.gen_info['VerifiedListing'] == 'Verified Listing').astype(int)
-        self.gen_info['ReviewScore'] = self.gen_info['ReviewScore'].replace("No reviews", 0).astype(float)
+        self.gen_info['VerifiedListing'] = (self.gen_info['VerifiedListing'] == 'verified').astype(int)
+
 
     def process_amenities(self):
         self.gen_info['Amenities'] = self.gen_info['Amenities'].apply(self.clean_amenities)

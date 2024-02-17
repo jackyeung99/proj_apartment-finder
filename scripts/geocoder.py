@@ -9,9 +9,9 @@ class GeoCoder:
         self.max_workers = max_workers
         logging.basicConfig(level=logging.INFO)
 
-    def geocode_address(self, address, attempt=1, max_attempts=1):
+    def geocode_address(self, address, attempt=1, max_attempts=3):
         try:
-            location = self.geolocator.geocode(address, timeout=7)
+            location = self.geolocator.geocode(address, timeout=10)
             return (location.latitude, location.longitude) if location else (None, None)
         except (GeocoderTimedOut, GeocoderUnavailable) as e:
             if attempt < max_attempts:
