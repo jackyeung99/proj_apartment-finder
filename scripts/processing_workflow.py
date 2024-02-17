@@ -54,13 +54,14 @@ class ProcessWorkflow:
         """Geocode addresses and update the DataFrame with 'Latitude' and 'Longitude'."""
         full_addresses = [f"{addr}, {self.city_str}, {state}" for addr in df['Address'].unique()]
         results = self.geo.batch_geocode(full_addresses)
-        coords = []
-        for addr in full_addresses:
-            lat, lon = results.get(addr, (None, None))
-            coords.append((lat, lon))
 
-        # Update the DataFrame with the latitude and longitude values
-        df[['Latitude', 'Longitude']] = pd.DataFrame(coords, columns=['Latitude', 'Longitude'], index=df.index)
+        def map_coords(row):
+            full_address = f"{row['Address']}, {self.city_str}, {state}"
+            lat, lon = results.get(full_address, (None, None))
+            return pd.Series([lat, lon], index=['Latitude', 'Longitude'])
+
+        # Apply the function to the DataFrame and update the 'Latitude' and 'Longitude' columns
+        df[['Latitude', 'Longitude']] = df.apply(map_coords, axis=1)
 
     def process_amenities(self, df):
         """Vectorize amenities and expand them into separate columns in the DataFrame."""
