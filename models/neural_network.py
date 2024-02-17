@@ -24,7 +24,7 @@ class NeuralNetworkRegressor:
             ])
         return preprocessor
 
-    def _split_data(self, X, y, test_size=0.3, random_state=42):
+    def _split_data(self, X, y, test_size=0.2, random_state=42):
         return train_test_split(X, y, test_size=test_size, random_state=random_state)
 
     def _build_model(self, input_shape):
@@ -37,10 +37,6 @@ class NeuralNetworkRegressor:
         return model
 
     def fit(self, df, epochs=10, batch_size=32, validation_split=0.2):
-        # handle outliers
-        # lower_cap = df[self.target_column].quantile(0.05)
-        # upper_cap = df[self.target_column].quantile(0.95)
-        # df[self.target_column] = df[self.target_column].clip(lower_cap, upper_cap)
 
         X = df.drop(self.target_column, axis=1)
         y = df[self.target_column]
@@ -78,10 +74,18 @@ class NeuralNetworkRegressor:
 
     
 if __name__ == '__main__':
-    numeric_features = ['Latitude', 'Longitude', 'ReviewScore', 'Leisure', 'Technology', 'Services', 'Location', 'Fitness & Wellness', 'Safety & Security', 'Apartment_features', 'Appliances', 'Baths', 'Beds', 'SquareFootage']
+    numeric_features = ['Latitude', 'Longitude', 'ReviewScore', 'Baths', 'Beds', 'SquareFootage']
     categorical_features = ['Neighborhood_Label']
     target_column = 'MaxRent'
-    df = pd.read_csv('../data/processed_data/seattle_wa_processed.csv')
+    df = pd.read_csv('data/processed_data/seattle_wa_processed.csv')
+    df = df[['Latitude','Longitude','Neighborhood_Label','MaxRent','Beds','Baths','SquareFootage','ReviewScore']]
+    df = df.applymap(lambda x: pd.to_numeric(x, errors='coerce')).dropna()
+    df = df.loc[:, ~df.apply(lambda col: col.astype(str).str.lower().eq('none').any())]
+
+    lower_cap = df['MaxRent'].quantile(0.00)
+    upper_cap = df['MaxRent'].quantile(0.995)
+    df['MaxRent'] = df['MaxRent'].clip(lower_cap, upper_cap)
+   
     # Initialize the model
     nn_model = NeuralNetworkRegressor(numeric_features, categorical_features, target_column)
     nn_model.fit(df)
@@ -94,9 +98,7 @@ if __name__ == '__main__':
     # Create a scatter plot
     plt.figure(figsize=(10, 6))
     plt.scatter(nn_model.y_test, y_pred, alpha=0.3)
-
-    # Plot a diagonal line for reference
-    plt.plot([min(nn_model.y_test), max(nn_model.y_test)], [min(nn_model.y_test), max(nn_model.y_test)], color='red')  # Diagonal line
+    plt.plot([min(nn_model.y_test), max(nn_model.y_test)], [min(nn_model.y_test), max(nn_model.y_test)], color='red')
 
     plt.title('Actual vs. Predicted Values')
     plt.xlabel('Actual Values')
