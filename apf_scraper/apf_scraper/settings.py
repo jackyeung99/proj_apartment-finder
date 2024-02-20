@@ -37,14 +37,19 @@ DOWNLOAD_HANDLERS = {
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 # Enable Scrapy-Playwright middleware
 DOWNLOADER_MIDDLEWARES = {
-    'scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler': 500,
+    'scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler': 500
 }
+
 # Playwright settings
 PLAYWRIGHT_BROWSER_TYPE = 'chromium'  # You can specify 'firefox' or 'webkit' if needed
 
 # Playwright launch options (uncomment the 'headless' option if you want headless mode)
 PLAYWRIGHT_LAUNCH_OPTIONS = {
     'headless': True,
+    # 'args': [
+    #     '--no-sandbox',  # Disable the Chrome sandbox (use with caution!)
+    #     '--disable-setuid-sandbox',  # Disable the setuid sandbox for the renderer process
+    # ],
 }
 
 # PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT = (
