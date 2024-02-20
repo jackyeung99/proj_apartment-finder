@@ -9,24 +9,7 @@
 
 
 # log level
-LOG_LEVEL = 'WARNING'
-
-# Scrapy Selenium 
-# from shutil import which
-# SELENIUM_DRIVER_NAME = 'chrome'
-# SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
-# SELENIUM_DRIVER_ARGUMENTS=['--no-sandbox',
-#                             # '--headless',
-#                            '--disable-gpu'
-#                          #    "window-size=1920,1080",
-#                             ]  
-
-
-# DOWNLOADER_MIDDLEWARES = {
-#       'scrapy_selenium.SeleniumMiddleware': 800,
-#       # 'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
-#       # 'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
-#      }
+LOG_LEVEL = 'INFO'
 
 # scrapy playwright
 DOWNLOAD_HANDLERS = {
@@ -52,6 +35,8 @@ PLAYWRIGHT_LAUNCH_OPTIONS = {
     # ],
 }
 
+
+
 # PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT = (
 #     15 * 1000
 # )
@@ -66,7 +51,7 @@ NEWSPIDER_MODULE = "apf_scraper.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+# USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False

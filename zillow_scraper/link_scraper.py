@@ -15,11 +15,12 @@ async def _search(
     """base search function which is used by sale and rent search functions"""
     html_response = await session.get(f"https://www.zillow.com/homes/{query}_rb/")
     assert html_response.status_code == 403, "request is blocked"
+    print(html_response.status_code)
     selector = Selector(html_response.text)
     # find query data in script tags
-    script_data = json.loads(
-        selector.xpath("//script[@id='__NEXT_DATA__']/text()").get()
-    )
+    script_data = selector.css("script#__NEXT_DATA__::text").get()
+    print(script_data)
+    script_data = json.loads(script_data)
     query_data = script_data["props"]["pageProps"]["searchPageState"]["queryState"]
     if filters:
         query_data["filterState"] = filters
