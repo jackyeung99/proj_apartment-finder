@@ -1,25 +1,24 @@
-import scrapy
 
 import scrapy
 import json
 from scrapy.crawler import CrawlerProcess
 import scrapy
-from scrapy.http import JsonRequest
 from urllib.parse import urlparse, parse_qs, urlencode, urljoin
 import json
-import js2xml
+from scrapy.http import JsonRequest
 from parsel import Selector
 import random
 
 class ZillowCrawlerSpider(scrapy.Spider):
     name = "zillow_crawler"
     allowed_domains = ["zillow.com"]
-    start_urls = [ 'https://www.zillow.com/homes/NY_rb/' ]
+    start_urls = ['https://www.zillow.com/homes/NY_rb/']
     custom_settings = {
             'DEFAULT_REQUEST_HEADERS': {
                 'authority': 'www.zillow.com',
                 'pragma': 'no-cache',
                 'cache-control': 'no-cache',
+                'content-type': 'application/json',
                 'sec-ch-ua': '"Google Chrome";v="93", " Not;A Brand";v="99", "Chromium";v="93"',
                 'sec-ch-ua-mobile': '?0',
                 'sec-ch-ua-platform': '"macOS"',
@@ -34,7 +33,7 @@ class ZillowCrawlerSpider(scrapy.Spider):
                 }
             }
 
-    def __init__(self, start_urls=None):
+    def __init__(self,start_urls = None):
         super().__init__()
         self.filters =  {
         "isForSaleForeclosure": {"value": False},
@@ -84,18 +83,23 @@ class ZillowCrawlerSpider(scrapy.Spider):
             callback=self.parse_property_list_json, 
             method='PUT', 
             body=json.dumps(full_query), 
-            headers=headers
             )
 
     def parse_property_list_json(self, response):
         json_str = response.text
         json_dict = json.loads(json_str)
-        print(len(json_dict['cat1']['searchResults']))
-        first = json_dict['cat1']['searchResults']['mapResults']
-        print(first[0])
+        search_results = json_dict['cat1']['searchResults']['mapResults']
+        listings = []
+        for set in search_results[:10]:
+            # try:
+            #     id = set['zpid']
+            # except: 
+            #     id = set['plid']
+            if 'detailUrl' in set.keys():
+                listings.append('zillow.com' + str(set.get('detailUrl','')))
+                
 
-        # print([(x.get('zpid',''),x.get('price','')) for x in first])
-        
+        print(listings)
 
         
         

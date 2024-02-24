@@ -41,9 +41,9 @@ async def scrape_properties(urls: List[str]):
         return [result for result in results if result is not None]
 
 async def run():
-    data = await scrape_properties([
-        "https://www.zillow.com/homedetails/98-Greene-St-FLOOR-2-New-York-NY-10012/340032315_zpid/"
-    ])
+    data = await scrape_properties(
+        ['https://www.zillow.com/b/building/40.73873,-73.6003_ll/', 'https://www.zillow.com/b/building/40.74058,-73.58548_ll/', 'https://www.zillow.com/apartments/saratoga-springs-ny/saratoga-market-center/5XrYdh/', 'https://www.zillow.com/apartments/lynbrook-ny/the-cornerstone-yorkshire/97k3vj/', 'https://www.zillow.com/b/building/41.133896,-73.79311_ll/', 'https://www.zillow.com/apartments/ithaca-ny/library-place/BhQPQK/', r'https://www.zillow.com/apartments/east-moriches-ny/walden-pond.dash.-55%2b-community/5Xt4VP/', 'https://www.zillow.com/homedetails/32-Titus-Ct-13B4653E8-Rochester-NY-14617/340066443_zpid/', 'https://www.zillow.com/apartments/little-falls-ny/little-falls-garden-apartments/5Xm7Lp/', 'https://www.zillow.com/b/building/43.039852,-73.84325_ll/']
+    )
     print(json.dumps(data, indent=2))
 
 if __name__ == "__main__":

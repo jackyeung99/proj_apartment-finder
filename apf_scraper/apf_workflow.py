@@ -6,13 +6,18 @@ import logging
 
 def run_spiders(city, state):
     start = time.time()
-    # Run LinkSpider to scrape links
+    # Run apartment link retrieval
     # subprocess.run(['scrapy', 'crawl', 'apf_crawler', '-a', f'city={city}', '-a', f'state={state}'])
     # logging.info('Crawler Finished')
-    # print('crawler finished')
-    # Run apf_parser_Spider to parse links and save data
-    subprocess.run(['scrapy', 'crawl', 'apf_parser', '-a', f'city={city}', '-a', f'state={state}'])
-    logging.info('Parser Finished')
+
+    # Run parser on apartment
+    # subprocess.run(['scrapy', 'crawl', 'apf_parser', '-a', f'city={city}', '-a', f'state={state}'])
+    # logging.info('Parser Finished')
+
+    # run zillow unit search 
+    subprocess.run(['scrapy', 'crawl', 'zillow_crawler', '-a', f'city={city}', '-a', f'state={state}'])
+    subprocess.run(['scrapy', 'crawl', 'zillow_parser', '-a', f'city={city}', '-a', f'state={state}'])
+
     end = time.time()
     print(f"runtime: {end-start}")
     
