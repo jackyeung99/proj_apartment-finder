@@ -12,8 +12,9 @@ async def fetch_property_data(client, url):
     selector = Selector(response.text)
     data = selector.css("script#__NEXT_DATA__::text").get()
     data = json.loads(data)
-    print(data.keys())
-    
+    property_data = data.get("props", {}).get("pageProps", {}).get("componentProps", {}).get("gdpClientCache", {})
+    print(property_data.keys())
+
     # if data:
     #     data = json.loads(data)
     #     property_data = data.get("props", {}).get("pageProps", {}).get("componentProps", {}).get("gdpClientCache", {})

@@ -8,11 +8,12 @@ import json
 from scrapy.http import JsonRequest
 from parsel import Selector
 import random
+from pprint import pprint
 
 class ZillowCrawlerSpider(scrapy.Spider):
     name = "zillow_crawler"
     allowed_domains = ["zillow.com"]
-    start_urls = ['https://www.zillow.com/homes/NY_rb/']
+    start_urls = ['https://www.zillow.com/new-york-ny/rentals/']
     custom_settings = {
             'DEFAULT_REQUEST_HEADERS': {
                 'authority': 'www.zillow.com',
@@ -53,7 +54,7 @@ class ZillowCrawlerSpider(scrapy.Spider):
             self.start_urls = start_urls.split('|')
 
     def start_requests(self):
-        fsbo_url = 'https://www.zillow.com/homes/fsbo/'
+        fsbo_url = r'https://www.zillow.com/new-york-ny/rentals/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3A-74.43424032617187%2C%22east%22%3A-73.52512167382812%2C%22south%22%3A40.38633696547364%2C%22north%22%3A41.007916244996316%7D%2C%22usersSearchTerm%22%3A%22New%20York%20NY%22%2C%22regionSelection%22%3A%5B%7B%22regionId%22%3A6181%2C%22regionType%22%3A6%7D%5D%2C%22filterState%22%3A%7B%22fr%22%3A%7B%22value%22%3Atrue%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22auc%22%3A%7B%22value%22%3Afalse%7D%2C%22fore%22%3A%7B%22value%22%3Afalse%7D%2C%22sf%22%3A%7B%22value%22%3Afalse%7D%2C%22tow%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D'
         yield scrapy.Request(fsbo_url, callback=self.start_main_requests)
 
     def start_main_requests(self, response):
@@ -74,9 +75,6 @@ class ZillowCrawlerSpider(scrapy.Spider):
         "requestId": random.randint(2,10)
         }
         api_url = 'https://www.zillow.com/async-create-search-page-state'
-        headers = {
-            'content-type': 'application/json'
-        }
 
         yield scrapy.Request(
             url=api_url, 
@@ -89,18 +87,6 @@ class ZillowCrawlerSpider(scrapy.Spider):
         json_str = response.text
         json_dict = json.loads(json_str)
         search_results = json_dict['cat1']['searchResults']['mapResults']
-        listings = []
-        for set in search_results[:10]:
-            # try:
-            #     id = set['zpid']
-            # except: 
-            #     id = set['plid']
-            if 'detailUrl' in set.keys():
-                listings.append('zillow.com' + str(set.get('detailUrl','')))
-                
-
-        print(listings)
-
+        for apartment in search_results[:5]:
+            url_extension = apartment['detailUrl']
         
-        
-
