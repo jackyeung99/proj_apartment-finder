@@ -1,30 +1,31 @@
 import scrapy
 import json
 from urllib.parse import urlencode
-
+from pprint import pprint
 class ZillowParserSpider(scrapy.Spider):
     name = "zillow_parser"
     allowed_domains = ["www.zillow.com"]
 
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, apartments_to_scrape, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.zpid = ['340066443', '341589101', '2053646109', '2053694999', '2064143172', '2057732979', '2055997847', '2053477066', '2098495358', '2083315848']
-
+        # self.parse_list = [(40.808674, -73.93156, ''), (40.588963, -73.79774, 2355011519), (40.706898, -73.80466, 2176833280), (40.709915, -73.79607, 1003190227), (40.755264, -73.82179, '')]
+        self.parse_list = apartments_to_scrape
+        
     def start_requests(self):
         fsbo_url = r'https://www.zillow.com/apartments/bronx-ny/estela-properties/CJbB6G/'
         yield scrapy.Request(fsbo_url, callback=self.start_requests)
 
     def start_requests(self):
-        for url in self.zpid:
+        for items in self.parse_list:
             url = "https://www.zillow.com/graphql/"
 
             payload = json.dumps({
             "operationName": "BuildingQuery",
             "variables": {
                 "cache": False,
-                "latitude": 40.808674,
-                "longitude": -73.93156,
+                "latitude": items[0],
+                "longitude": items[1],
                 "lotId": None,
                 "update": False
             },
@@ -62,13 +63,12 @@ class ZillowParserSpider(scrapy.Spider):
                 body=payload,
                 callback=self.parse_property_page_json
             )
+            break
                         
 
     def parse_property_page_json(self, response):
         json_dict = json.loads(response.text)
-        print(json_dict)
         data_dict = json_dict.get('data', {})
-        property_dict = data_dict.get('property')
-       
+        pprint(data_dict['building'].keys())
         
 

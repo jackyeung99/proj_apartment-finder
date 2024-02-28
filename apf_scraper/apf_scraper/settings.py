@@ -29,13 +29,14 @@ PLAYWRIGHT_BROWSER_TYPE = 'chromium'  # You can specify 'firefox' or 'webkit' if
 # Playwright launch options (uncomment the 'headless' option if you want headless mode)
 PLAYWRIGHT_LAUNCH_OPTIONS = {
     'headless': True,
-    # 'args': [
-    #     '--no-sandbox',  # Disable the Chrome sandbox (use with caution!)
-    #     '--disable-setuid-sandbox',  # Disable the setuid sandbox for the renderer process
-    # ],
+    
+    'args': [
+        '--no-sandbox',  # Disable the Chrome sandbox (use with caution!)
+        '--disable-setuid-sandbox',  # Disable the setuid sandbox for the renderer process
+    ],
 }
 
-
+USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 
 # PLAYWRIGHT_DEFAULT_NAVIGATION_TIMEOUT = (
 #     15 * 1000

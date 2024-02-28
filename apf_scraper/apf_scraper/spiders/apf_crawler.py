@@ -1,21 +1,9 @@
 
-import logging
 import re
-import os
-import json
-
 import scrapy
 from scrapy import Request
-from apf_scraper.items import ApfScraperLinkItem
-from playwright.sync_api import sync_playwright
 
 class ApfCrawlerSpider(scrapy.Spider):
-    custom_settings = {
-        'ITEM_PIPELINES': {
-            'apf_scraper.pipelines.LinkPipeline': 300,
-        }
-    }
-
     name = "apf_crawler"
     allowed_domains = ["www.apartments.com"]
 
@@ -54,7 +42,7 @@ class ApfCrawlerSpider(scrapy.Spider):
         link_selector = 'article.placard a.property-link::attr(href)'
         links = set(response.css(link_selector).getall())
         for link in links:
-            yield ApfScraperLinkItem(PropertyUrl=link)
+            yield {'url': link}
 
     def closed(self, reason):
         print(f"Spider closed because {reason}")

@@ -7,22 +7,36 @@ import scrapy
 class ApfScraperLinkItem(scrapy.Item):
     PropertyUrl = scrapy.Field()
 
-class ApfGeneralInfoItem(scrapy.Item):
+class ApartmentComplex(scrapy.Item):
     PropertyName = scrapy.Field()
     PropertyId = scrapy.Field()
     PropertyUrl = scrapy.Field()
+    Lat = scrapy.Field()
+    Long = scrapy.Field()
     Address = scrapy.Field()
-    NeighborhoodLink = scrapy.Field()
     Neighborhood = scrapy.Field()
+    PriceRange = scrapy.Field()
     ReviewScore = scrapy.Field()
-    VerifiedListing = scrapy.Field()
-    Amenities = scrapy.Field()
-    is_single_unit = scrapy.Field()
-
-class ApfUnitItem(scrapy.Item):
+    NumReviews = scrapy.Field()
+    NumUnits = scrapy.Field()
+    Details = scrapy.Field()
+    
+class ApartmentUnit(scrapy.Item):
     PropertyId = scrapy.Field()
     MaxRent = scrapy.Field()
-    Model = scrapy.Field()
+    ModelName = scrapy.Field()
     Beds = scrapy.Field()
     Baths = scrapy.Field()
     SquareFootage = scrapy.Field()
+
+class ComplexAmmenities(scrapy.Item):
+    PropertyId = scrapy.Field()
+    CommunityAmenities = scrapy.Field()
+
+class UnitAmmenities(scrapy.Item):
+    PropertyId = scrapy.Field()
+    CommunityAmenities = scrapy.Field()
+
+class contact_info(scrapy.Item):
+    
+    

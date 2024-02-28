@@ -19,21 +19,9 @@ class ApfParserSpider(scrapy.Spider):
         },
     }
 
-    def __init__(self, city, state, *args, **kwargs):
+    def __init__(self, apartments_to_scrape, *args, **kwargs):
         super(ApfParserSpider, self).__init__(*args, **kwargs)
-        self.city = city.lower()
-        self.state = state.lower()
-        self.base_dir = f"../data/{self.city}_{self.state}"
-        self.links_file = os.path.join(self.base_dir, f"{self.city}_{self.state}_links.txt")
-        self.links = self.get_links(self.links_file)
-
-    def get_links(self, links_file):
-        try:
-            with open(links_file, mode="r") as f:
-                return [line.strip() for line in f if line.strip()]
-        except FileNotFoundError:
-            logging.critical(f'File not found: {links_file}')
-            return []
+        self.parse_list = apartments_to_scrape
 
     def start_requests(self):
         for idx,url in enumerate(self.links[:1]):
@@ -48,14 +36,14 @@ class ApfParserSpider(scrapy.Spider):
         
 #  ======================= Scraping workflow/logic =======================
 
-    async def parse(self, response, **kwargs):
+    def parse(self, response, **kwargs):
         page = response.meta.get('playwright_page')
         if not page:
             self.log(f"Received a non-Playwright response for URL: {response.url}", level=logging.WARNING)
             return
         
         try:
-            apartment_json = await self.extract_json(response)
+            apartment_json = self.extract_json(response)
             
             # await page.text_content('span.reviewRating')
             print(apartment_json)
@@ -66,9 +54,9 @@ class ApfParserSpider(scrapy.Spider):
             self.log(f'An error occurred while parsing the page:{response.url} {str(e)}', level=logging.ERROR)
 
         finally:
-            await page.close()
+            page.close()
 
-    async def extract_json(self,response):
+    def extract_json(self,response):
         script_text = response.xpath("//script[contains(., 'startup.init')]/text()").get()
         if script_text:
             json_str_match = re.search(r'startup\.init\(\s*(\{.*?\})\s*\);', script_text, re.DOTALL)
