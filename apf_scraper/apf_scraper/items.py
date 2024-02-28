@@ -37,6 +37,6 @@ class UnitAmmenities(scrapy.Item):
     PropertyId = scrapy.Field()
     CommunityAmenities = scrapy.Field()
 
-class contact_info(scrapy.Item):
+# class contact_info(scrapy.Item):
     
     

@@ -37,6 +37,10 @@ def run_spiders(city, state):
     print(f"runtime: {end-start}")
     
 if __name__ == "__main__":
-    city_list = [('san-diego','ca'),('san-francisco','ca'),('seattle','wa')]
-    for city,state in city_list:
-        run_spiders(city,state)
+    with open('cities.txt','r') as f: 
+        contents = f.readlines()
+        
+    for item in contents:
+        split = item.split(',')
+        run_spiders(split[0],split[1])
+
