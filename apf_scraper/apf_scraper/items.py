@@ -4,15 +4,32 @@
 # https://docs.scrapy.org/en/latest/topics/items.html
 
 import scrapy
-class ApfScraperLinkItem(scrapy.Item):
-    PropertyUrl = scrapy.Field()
+
+
+class City(scrapy.item):
+    CityId = scrapy.Field()         #Primary Key 
+    CityName = scrapy.Field()
+    COL = scrapy.Field()
+    Population = scrapy.Field()
+    CrimeRate = scrapy.Field()
+    TaxRate = scrapy.Field()
+    Unemployment = scrapy.Field()
+    MedianIncome = scrapy.Field()
+    Growth = scrapy.Field()
+
+class leasing_info(scrapy.Item):
+    LeasingId = scrapy.Field()      #Primary Key
+    Name = scrapy.Field()
+    Phone = scrapy.Field()
 
 class ApartmentComplex(scrapy.Item):
-    PropertyName = scrapy.Field()
-    PropertyId = scrapy.Field()
+    ComplexId = scrapy.Field()      #Primary Key
+    CityId = scrapy.Field()         #Foreign Key 
+    Name = scrapy.Field()
     PropertyUrl = scrapy.Field()
     Lat = scrapy.Field()
     Long = scrapy.Field()
+    PriceRange = scrapy.Field()
     Address = scrapy.Field()
     Neighborhood = scrapy.Field()
     PriceRange = scrapy.Field()
@@ -22,7 +39,8 @@ class ApartmentComplex(scrapy.Item):
     Details = scrapy.Field()
     
 class ApartmentUnit(scrapy.Item):
-    PropertyId = scrapy.Field()
+    UnitId = scrapy.Field()         #Primary Key
+    PropertyId = scrapy.Field()     #Foreign Key 
     MaxRent = scrapy.Field()
     ModelName = scrapy.Field()
     Beds = scrapy.Field()
@@ -30,13 +48,13 @@ class ApartmentUnit(scrapy.Item):
     SquareFootage = scrapy.Field()
 
 class ComplexAmmenities(scrapy.Item):
-    PropertyId = scrapy.Field()
+    PropertyId = scrapy.Field()     #Foreign Key 
     CommunityAmenities = scrapy.Field()
 
 class UnitAmmenities(scrapy.Item):
-    PropertyId = scrapy.Field()
+    PropertyId = scrapy.Field()     #Foreign Key 
     CommunityAmenities = scrapy.Field()
 
-# class contact_info(scrapy.Item):
+
     
     

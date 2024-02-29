@@ -8,7 +8,7 @@ import logging
 import json
 import os
 import re
-from apf_scraper.items import ApfUnitItem, ApfGeneralInfoItem
+from apf_scraper.items import ApartmentUnit, ApartmentComplex, leasing_info, ComplexAmmenities, UnitAmmenities
 
 class ApfParserSpider(scrapy.Spider):
     name = "apf_parser"
@@ -44,8 +44,6 @@ class ApfParserSpider(scrapy.Spider):
         
         try:
             apartment_json = self.extract_json(response)
-            
-            # await page.text_content('span.reviewRating')
             print(apartment_json)
             # for unit in apartment_json['rentals']:
             #     print(unit.keys())
