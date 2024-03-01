@@ -6,7 +6,7 @@
 import scrapy
 
 
-class City(scrapy.item):
+class City(scrapy.Item):
     CityId = scrapy.Field()         #Primary Key 
     CityName = scrapy.Field()
     COL = scrapy.Field()
@@ -32,7 +32,6 @@ class ApartmentComplex(scrapy.Item):
     PriceRange = scrapy.Field()
     Address = scrapy.Field()
     Neighborhood = scrapy.Field()
-    PriceRange = scrapy.Field()
     ReviewScore = scrapy.Field()
     NumReviews = scrapy.Field()
     NumUnits = scrapy.Field()

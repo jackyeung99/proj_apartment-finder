@@ -1,12 +1,9 @@
 
 import scrapy
 from scrapy import Request
-from playwright.async_api import async_playwright
-import asyncio
 import chompjs
 import logging
 import json
-import os
 import re
 from apf_scraper.items import ApartmentUnit, ApartmentComplex, leasing_info, ComplexAmmenities, UnitAmmenities
 
@@ -44,7 +41,7 @@ class ApfParserSpider(scrapy.Spider):
         
         try:
             apartment_json = self.extract_json(response)
-            print(apartment_json)
+            print(apartment_json.keys())
             # for unit in apartment_json['rentals']:
             #     print(unit.keys())
 

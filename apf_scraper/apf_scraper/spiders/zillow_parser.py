@@ -1,6 +1,5 @@
 import scrapy
 import json
-from urllib.parse import urlencode
 from pprint import pprint
 from apf_scraper.items import ApartmentUnit, ApartmentComplex, leasing_info, ComplexAmmenities, UnitAmmenities
 
@@ -10,8 +9,8 @@ class ZillowParserSpider(scrapy.Spider):
     allowed_domains = ["www.zillow.com"]
 
 
-    def __init__(self, apartments_to_scrape, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, apartments_to_scrape):
+        super().__init__()
         # self.parse_list = [(40.808674, -73.93156, ''), (40.588963, -73.79774, 2355011519), (40.706898, -73.80466, 2176833280), (40.709915, -73.79607, 1003190227), (40.755264, -73.82179, '')]
         self.parse_list = apartments_to_scrape
         
