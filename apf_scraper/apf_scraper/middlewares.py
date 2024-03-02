@@ -2,6 +2,8 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
+import random
 
 from scrapy import signals
 
@@ -101,3 +103,21 @@ class ApfScraperDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info("Spider opened: %s" % spider.name)
+    
+class RandomUserAgentMiddleware(UserAgentMiddleware):
+    def __init__(self, user_agent='Scrapy'):
+        self.user_agent = user_agent
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        o = cls(user_agent=crawler.settings.get('USER_AGENT'))
+        crawler.signals.connect(o.spider_opened, signal=signals.spider_opened)
+        return o
+
+    def process_request(self, request, spider):
+        try:
+            user_agent = random.choice(spider.settings.get('USER_AGENT_LIST'))
+            if user_agent:
+                request.headers.setdefault('User-Agent', user_agent)
+        except IndexError:
+            pass

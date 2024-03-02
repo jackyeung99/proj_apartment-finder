@@ -5,23 +5,19 @@ import chompjs
 import logging
 import json
 import re
-from apf_scraper.items import ApartmentUnit, ApartmentComplex, leasing_info, ComplexAmmenities, UnitAmmenities
+from items import Apartment
+
 
 class ApfParserSpider(scrapy.Spider):
     name = "apf_parser"
-    custom_settings = {
-        'ITEM_PIPELINES': {
-            'apf_scraper.pipelines.ApartmentGeneralInfoPipeline': 100,
-            'apf_scraper.pipelines.UnitPricesPipeline': 200,
-        },
-    }
 
-    def __init__(self, apartments_to_scrape, *args, **kwargs):
+    def __init__(self, apartments_to_scrape, file, *args, **kwargs):
         super(ApfParserSpider, self).__init__(*args, **kwargs)
+        self.file = file
         self.parse_list = apartments_to_scrape
 
     def start_requests(self):
-        for idx,url in enumerate(self.links[:1]):
+        for idx,url in enumerate(self.links):
             print(f'page:{idx} out of {len(self.links)}')
             yield Request(
                 url=url,
@@ -32,19 +28,14 @@ class ApfParserSpider(scrapy.Spider):
                 })
         
 #  ======================= Scraping workflow/logic =======================
-
     def parse(self, response, **kwargs):
         page = response.meta.get('playwright_page')
         if not page:
             self.log(f"Received a non-Playwright response for URL: {response.url}", level=logging.WARNING)
-            return
-        
+            return 
         try:
-            apartment_json = self.extract_json(response)
-            print(apartment_json.keys())
-            # for unit in apartment_json['rentals']:
-            #     print(unit.keys())
-
+            # yield json for each apartment
+            yield Apartment({'apartment_json': self.extract_json(response)})
         except Exception as e:
             self.log(f'An error occurred while parsing the page:{response.url} {str(e)}', level=logging.ERROR)
 
@@ -60,26 +51,4 @@ class ApfParserSpider(scrapy.Spider):
                 converted = chompjs.parse_js_object(json_like_str)
 
         return converted
-    
-    # async def retrieve_info(self,apartment_json):
-    #     return {
-    #         'PropertyName': apartment_json['ListingName'],
-    #         'PropertyId': apartment_json['listingId'],
-    #         'PropertyUrl': response.url,
-    #         'Address': apartment_json['ListingAddress'],
-    #         'Neighborhood':,
-    #         'ReviewScore': float(results['reviews_element'].strip()) if results['reviews_element'] else 0,
-    #         'VerifiedListing': 'verified' if results.get('verification') else 'Un-verified',
-    #         'Amenities': amenities
-    #     }
-        
-
-    # async def retrieve_unit(self,unit_json):
-    #     return {'PropertyId':unit_json['RentalKey'],
-    #             'MaxRent': unit_json['MaxRent'],
-    #             'Model': unit_json['Mode'],
-    #             'Beds':unit_json['Beds'],
-    #             'Baths':unit_json['Baths'],
-    #             'SquareFootage': unit_json['SquareFeet']}
-
 

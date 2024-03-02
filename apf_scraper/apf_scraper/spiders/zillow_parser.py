@@ -1,17 +1,15 @@
 import scrapy
 import json
-from pprint import pprint
-from apf_scraper.items import ApartmentUnit, ApartmentComplex, leasing_info, ComplexAmmenities, UnitAmmenities
+from apf_scraper.items import Apartment
 
 
 class ZillowParserSpider(scrapy.Spider):
     name = "zillow_parser"
     allowed_domains = ["www.zillow.com"]
 
-
-    def __init__(self, apartments_to_scrape):
+    def __init__(self, apartments_to_scrape,file):
         super().__init__()
-        # self.parse_list = [(40.808674, -73.93156, ''), (40.588963, -73.79774, 2355011519), (40.706898, -73.80466, 2176833280), (40.709915, -73.79607, 1003190227), (40.755264, -73.82179, '')]
+        self.file = file
         self.parse_list = apartments_to_scrape
         
     def start_requests(self):
@@ -67,10 +65,10 @@ class ZillowParserSpider(scrapy.Spider):
             )
             
                         
-
     def parse_property_page_json(self, response):
         json_dict = json.loads(response.text)
         data_dict = json_dict.get('data', {})
-        pprint(data_dict['building'].keys())
+        building = data_dict.get('building', {})
+        yield Apartment({'apartment_json': building})
         
 
