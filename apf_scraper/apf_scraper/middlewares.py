@@ -131,8 +131,8 @@ class ProxyMiddleware:
 
     @classmethod
     def from_crawler(cls, crawler):
-        proxy = crawler.creds.get('BRIGHT_DATA_PROXY')
-        proxy_credentials = crawler.creds.get('BRIGHT_DATA_PROXY_CREDENTIALS')
+        proxy = BRIGHT_DATA_PROXY
+        proxy_credentials = BRIGHT_DATA_PROXY_CREDENTIALS
         return cls(proxy, proxy_credentials)
 
     def process_request(self, request, spider):
