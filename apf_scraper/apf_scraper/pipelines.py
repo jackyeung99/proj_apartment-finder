@@ -14,7 +14,7 @@ import os
 class ApfPipeline:
     def __init__(self):
         self.buffer = [] 
-        self.buffer_size = 50 
+        self.buffer_size = 25
 
     def open_spider(self, spider):
         if hasattr(spider, 'file') and spider.file is not None:
@@ -31,6 +31,7 @@ class ApfPipeline:
         if item.__class__.__name__ == 'Apartment':
             line = json.dumps(dict(item)) + "\n"
             self.buffer.append(line) 
+            print(line)
             if len(self.buffer) >= self.buffer_size:  
                 self.flush_buffer() 
         return item
