@@ -1,21 +1,10 @@
 
-import logging
 import re
-import os
-import json
-
 import scrapy
 from scrapy import Request
-from apf_scraper.items import ApfScraperLinkItem
-from playwright.sync_api import sync_playwright
+from apf_scraper.creds import PROXY
 
 class ApfCrawlerSpider(scrapy.Spider):
-    custom_settings = {
-        'ITEM_PIPELINES': {
-            'apf_scraper.pipelines.LinkPipeline': 300,
-        }
-    }
-
     name = "apf_crawler"
     allowed_domains = ["www.apartments.com"]
 
@@ -30,7 +19,7 @@ class ApfCrawlerSpider(scrapy.Spider):
         initial_url = f"https://www.apartments.com/{self.housing_type}/{self.city}-{self.state}/"
         yield Request(url=initial_url, callback=self.parse_initial,meta=dict(
 			    playwright = True,
-			    playwright_include_page = True,))
+			    playwright_include_page = True))
 
     def parse_initial(self, response):
         ''' Pagination logic to scrape through all available pages'''
@@ -40,7 +29,7 @@ class ApfCrawlerSpider(scrapy.Spider):
                 url = f"https://www.apartments.com/{self.housing_type}/{self.city}-{self.state}/{page_num}/"
                 yield Request(url=url, callback=self.parse,meta=dict(
 			    playwright = True,
-			    playwright_include_page = True,))
+			    playwright_include_page = True))
 
     def extract_max_page(self, response):
         ''' Retrieve max page to limit pagination'''
@@ -54,7 +43,7 @@ class ApfCrawlerSpider(scrapy.Spider):
         link_selector = 'article.placard a.property-link::attr(href)'
         links = set(response.css(link_selector).getall())
         for link in links:
-            yield ApfScraperLinkItem(PropertyUrl=link)
+            yield {'url': link}
 
     def closed(self, reason):
         print(f"Spider closed because {reason}")
