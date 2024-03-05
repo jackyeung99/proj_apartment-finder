@@ -1,6 +1,7 @@
 import scrapy
 import json
 from apf_scraper.items import Apartment
+import logging
 
 
 class ZillowParserSpider(scrapy.Spider):
@@ -56,19 +57,22 @@ class ZillowParserSpider(scrapy.Spider):
             'sec-ch-ua-platform': '"Windows"'
             }
         
-            yield scrapy.Request(
-                url=url,
-                method='POST',
-                headers=headers,
-                body=payload,
-                callback=self.parse_property_page_json
-            )
-            
+            try: 
+                yield scrapy.Request(
+                    url=url,
+                    method='POST',
+                    headers=headers,
+                    body=payload,
+                    callback=self.parse_property_page_json
+                )
+            except:
+                logging.warning(f'Request Failed for {item}')
                         
     def parse_property_page_json(self, response):
         json_dict = json.loads(response.text)
         data_dict = json_dict.get('data', {})
         building = data_dict.get('building', {})
+        building['source'] = 'zillow.com'
         yield Apartment({'apartment_json': building})
         
 

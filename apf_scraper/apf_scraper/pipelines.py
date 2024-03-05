@@ -17,8 +17,8 @@ class ApfPipeline:
         self.buffer_size = 50 
 
     def open_spider(self, spider):
-        if hasattr(spider, 'filename') and spider.filename is not None:
-            self.file = open(spider.filename, 'w', encoding='utf-8')
+        if hasattr(spider, 'file') and spider.file is not None:
+            self.file = open(spider.file, 'a', encoding='utf-8')
         else:
             self.file = None
 

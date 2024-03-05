@@ -116,8 +116,28 @@ class RandomUserAgentMiddleware(UserAgentMiddleware):
 
     def process_request(self, request, spider):
         try:
-            user_agent = random.choice(spider.settings.get('USER_AGENT_LIST'))
+            user_agent = random.choice(spider.settings.get('USER_AGENTS'))
             if user_agent:
                 request.headers.setdefault('User-Agent', user_agent)
         except IndexError:
             pass
+
+import base64
+from creds import BRIGHT_DATA_PROXY, BRIGHT_DATA_PROXY_CREDENTIALS
+class ProxyMiddleware:
+    def __init__(self, proxy, proxy_credentials):
+        self.proxy = proxy
+        self.proxy_credentials = proxy_credentials
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        proxy = crawler.creds.get('BRIGHT_DATA_PROXY')
+        proxy_credentials = crawler.creds.get('BRIGHT_DATA_PROXY_CREDENTIALS')
+        return cls(proxy, proxy_credentials)
+
+    def process_request(self, request, spider):
+        request.meta['proxy'] = self.proxy
+        # Set the proxy authentication
+        user_pass = f"{self.proxy_credentials['username']}:{self.proxy_credentials['password']}"
+        encoded_user_pass = base64.b64encode(user_pass.encode('utf-8')).decode('utf-8')
+        request.headers['Proxy-Authorization'] = f'Basic {encoded_user_pass}'

@@ -3,6 +3,7 @@ import re
 import scrapy
 from scrapy import Request
 
+
 class ApfCrawlerSpider(scrapy.Spider):
     name = "apf_crawler"
     allowed_domains = ["www.apartments.com"]
