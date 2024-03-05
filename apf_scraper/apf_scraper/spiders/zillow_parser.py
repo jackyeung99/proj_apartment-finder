@@ -18,7 +18,8 @@ class ZillowParserSpider(scrapy.Spider):
         yield scrapy.Request(fsbo_url, callback=self.start_requests)
 
     def start_requests(self):
-        for items in self.parse_list:
+        for idx,items in enumerate(self.parse_list):
+            logging.info(f"scraping {idx} out of {len(self.parse_list)}")
             url = "https://www.zillow.com/graphql/"
 
             payload = json.dumps({
@@ -64,6 +65,7 @@ class ZillowParserSpider(scrapy.Spider):
                     headers=headers,
                     body=payload,
                     callback=self.parse_property_page_json,
+                    # meta={"proxy":PROXY}
                 )
             except:
                 logging.warning(f'Request Failed for {items}')

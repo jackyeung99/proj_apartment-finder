@@ -7,7 +7,8 @@ import json
 import re
 from apf_scraper.items import Apartment
 from apf_scraper.creds import PROXY
-
+from playwright.async_api import async_playwright
+import asyncio
 
 class ApfParserSpider(scrapy.Spider):
     name = "apf_parser"
@@ -29,18 +30,22 @@ class ApfParserSpider(scrapy.Spider):
                     })
         
 #  ======================= Scraping workflow/logic =======================
-    def parse(self, response, **kwargs):
+    async def parse(self, response, **kwargs):
         page = response.meta.get('playwright_page')
         if not page:
             self.log(f"Received a non-Playwright response for URL: {response.url}", level=logging.WARNING)
             return 
         try:
             # yield json for each apartment
-            yield Apartment({'apartment_json': self.extract_json(response)})
+            yield Apartment({'apartment_json': await self.extract_json(response)})
         except Exception as e:
             self.log(f'An error occurred while parsing the page:{response.url} {str(e)}', level=logging.ERROR)
+        finally:
+            logging.info('Page Closed')
+            await page.close()
+        
 
-    def extract_json(self,response):
+    async def extract_json(self,response):
         combined_json = {}
 
         # data in javascript script
