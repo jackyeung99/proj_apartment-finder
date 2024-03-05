@@ -6,7 +6,7 @@ import logging
 import json
 import re
 from apf_scraper.items import Apartment
-
+from apf_scraper.creds import PROXY
 
 
 class ApfParserSpider(scrapy.Spider):
@@ -24,9 +24,9 @@ class ApfParserSpider(scrapy.Spider):
                 url=url,
                 callback=self.parse,
                 meta={
-                'playwright': True,
-                'playwright_include_page': True,
-                })
+                    'playwright': True,
+                    'playwright_include_page': True,
+                    })
         
 #  ======================= Scraping workflow/logic =======================
     def parse(self, response, **kwargs):

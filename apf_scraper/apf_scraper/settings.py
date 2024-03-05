@@ -9,7 +9,7 @@
 
 
 # log level
-LOG_LEVEL = 'WARNING'
+LOG_LEVEL = 'INFO'
 
 # scrapy playwright
 DOWNLOAD_HANDLERS = {
@@ -22,6 +22,7 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 DOWNLOADER_MIDDLEWARES = {
     'scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler': 500,
     'apf_scraper.middlewares.RandomUserAgentMiddleware': 400
+    # 'myproject.middlewares.ProxyMiddleware': 100
 }
 
 

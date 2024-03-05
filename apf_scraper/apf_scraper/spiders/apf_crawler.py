@@ -2,7 +2,7 @@
 import re
 import scrapy
 from scrapy import Request
-
+from apf_scraper.creds import PROXY
 
 class ApfCrawlerSpider(scrapy.Spider):
     name = "apf_crawler"
@@ -19,7 +19,7 @@ class ApfCrawlerSpider(scrapy.Spider):
         initial_url = f"https://www.apartments.com/{self.housing_type}/{self.city}-{self.state}/"
         yield Request(url=initial_url, callback=self.parse_initial,meta=dict(
 			    playwright = True,
-			    playwright_include_page = True,))
+			    playwright_include_page = True))
 
     def parse_initial(self, response):
         ''' Pagination logic to scrape through all available pages'''
@@ -29,7 +29,7 @@ class ApfCrawlerSpider(scrapy.Spider):
                 url = f"https://www.apartments.com/{self.housing_type}/{self.city}-{self.state}/{page_num}/"
                 yield Request(url=url, callback=self.parse,meta=dict(
 			    playwright = True,
-			    playwright_include_page = True,))
+			    playwright_include_page = True))
 
     def extract_max_page(self, response):
         ''' Retrieve max page to limit pagination'''

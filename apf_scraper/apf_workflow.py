@@ -49,9 +49,8 @@ def run_for_all_cities(cities):
     start = time.time()
     for location in cities[:1]:
         city, state = location.split(',')
-        file = get_file(city,state)
-        print(state)
-        # yield run_spiders_for_city(city.strip(), state.strip(),file)
+        file = get_file(city.strip(),state.strip())
+        yield run_spiders_for_city(city.strip(), state.strip(),file)
     print(f"all cities scraped, total time{time.time()-start}")
 
 

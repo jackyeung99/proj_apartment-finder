@@ -2,7 +2,7 @@ import scrapy
 import json
 from apf_scraper.items import Apartment
 import logging
-
+from apf_scraper.creds import PROXY
 
 class ZillowParserSpider(scrapy.Spider):
     name = "zillow_parser"
@@ -63,10 +63,10 @@ class ZillowParserSpider(scrapy.Spider):
                     method='POST',
                     headers=headers,
                     body=payload,
-                    callback=self.parse_property_page_json
+                    callback=self.parse_property_page_json,
                 )
             except:
-                logging.warning(f'Request Failed for {item}')
+                logging.warning(f'Request Failed for {items}')
                         
     def parse_property_page_json(self, response):
         json_dict = json.loads(response.text)

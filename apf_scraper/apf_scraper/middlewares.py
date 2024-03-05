@@ -122,22 +122,17 @@ class RandomUserAgentMiddleware(UserAgentMiddleware):
         except IndexError:
             pass
 
-import base64
-from creds import BRIGHT_DATA_PROXY, BRIGHT_DATA_PROXY_CREDENTIALS
-class ProxyMiddleware:
-    def __init__(self, proxy, proxy_credentials):
-        self.proxy = proxy
-        self.proxy_credentials = proxy_credentials
 
-    @classmethod
-    def from_crawler(cls, crawler):
-        proxy = BRIGHT_DATA_PROXY
-        proxy_credentials = BRIGHT_DATA_PROXY_CREDENTIALS
-        return cls(proxy, proxy_credentials)
+# from creds import PROXY
+# class ProxyMiddleware:
+#     def __init__(self, proxy):
+#         self.proxy = proxy
 
-    def process_request(self, request, spider):
-        request.meta['proxy'] = self.proxy
-        # Set the proxy authentication
-        user_pass = f"{self.proxy_credentials['username']}:{self.proxy_credentials['password']}"
-        encoded_user_pass = base64.b64encode(user_pass.encode('utf-8')).decode('utf-8')
-        request.headers['Proxy-Authorization'] = f'Basic {encoded_user_pass}'
+#     @classmethod
+#     def from_crawler(cls, crawler):  
+#         return cls(PROXY)
+
+#     def process_request(self, request, spider):
+#         request.meta['proxy'] = self.proxy
+
+    
