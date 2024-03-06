@@ -65,7 +65,7 @@ class ZillowParserSpider(scrapy.Spider):
                     headers=headers,
                     body=payload,
                     callback=self.parse_property_page_json,
-                    # meta={"proxy":PROXY}
+                    meta={"proxy":PROXY}
                 )
             except:
                 logging.warning(f'Request Failed for {items}')
