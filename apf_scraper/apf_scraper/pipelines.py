@@ -31,7 +31,6 @@ class ApfPipeline:
         if item.__class__.__name__ == 'Apartment':
             line = json.dumps(dict(item)) + "\n"
             self.buffer.append(line) 
-            print(line)
             if len(self.buffer) >= self.buffer_size:  
                 self.flush_buffer() 
         return item

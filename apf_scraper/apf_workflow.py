@@ -47,7 +47,7 @@ def run_spiders_for_city(city, state, file):
 @defer.inlineCallbacks
 def run_for_all_cities(cities):
     start = time.time()
-    for location in cities[:3]:
+    for location in cities:
         city, state = location.split(',')
         file = get_file(city.strip(),state.strip())
         yield run_spiders_for_city(city.strip(), state.strip(),file)
