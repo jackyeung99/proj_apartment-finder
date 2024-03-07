@@ -50,12 +50,12 @@ class ZillowCrawlerSpider(scrapy.Spider):
     def start_requests(self):
         fsbo_url = r'https://www.zillow.com/new-york-ny/rentals/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22isMapVisible%22%3Atrue%2C%22mapBounds%22%3A%7B%22west%22%3A-74.43424032617187%2C%22east%22%3A-73.52512167382812%2C%22south%22%3A40.38633696547364%2C%22north%22%3A41.007916244996316%7D%2C%22usersSearchTerm%22%3A%22New%20York%20NY%22%2C%22regionSelection%22%3A%5B%7B%22regionId%22%3A6181%2C%22regionType%22%3A6%7D%5D%2C%22filterState%22%3A%7B%22fr%22%3A%7B%22value%22%3Atrue%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%2C%22fsbo%22%3A%7B%22value%22%3Afalse%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22auc%22%3A%7B%22value%22%3Afalse%7D%2C%22fore%22%3A%7B%22value%22%3Afalse%7D%2C%22sf%22%3A%7B%22value%22%3Afalse%7D%2C%22tow%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D'
         yield scrapy.Request(fsbo_url, callback=self.start_main_requests
-                            #  ,meta={"proxy":PROXY}
+                             ,meta={"proxy":PROXY}
                              )
 
     def start_main_requests(self, response):
         yield scrapy.Request(self.start_url, callback=self.parse_property_list_html,
-                            #  meta={"proxy":PROXY}
+                             meta={"proxy":PROXY}
                              )
     
     def parse_property_list_html(self, response):
@@ -78,7 +78,7 @@ class ZillowCrawlerSpider(scrapy.Spider):
             callback=self.parse_property_list_json, 
             method='PUT', 
             body=json.dumps(full_query),
-            # meta={"proxy":PROXY}
+            meta={"proxy":PROXY}
             )
 
     def parse_property_list_json(self, response):
