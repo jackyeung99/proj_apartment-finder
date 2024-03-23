@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS leasing_info (
 );
 
 CREATE TABLE IF NOT EXISTS ApartmentComplex (
-    ComplexId INTEGER PRIMARY KEY,
+    
+    ComplexId AUTOINCREMENT PRIMARY KEY,
     CityId INTEGER,
     Name VARCHAR(255),
     PropertyUrl VARCHAR(255),

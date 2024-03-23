@@ -88,5 +88,6 @@ class ZillowCrawlerSpider(scrapy.Spider):
         for apartment in search_results:
             lat = apartment['latLong'].get('latitude','')
             long = apartment['latLong'].get('longitude','')
+            print(lat,long)
             yield {"Geo": (lat,long)}
     

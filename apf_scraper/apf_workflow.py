@@ -41,18 +41,19 @@ def run_spiders_for_city(city, state):
 
     dispatcher.connect(collect_links, signal=signals.item_scraped)
 
-    yield runner.crawl(ApfCrawlerSpider, city=city, state=state)
-    yield runner.crawl(ApfParserSpider, apartments_to_scrape=links, file=apartments_file)
-    links.clear()
+    # yield runner.crawl(ApfCrawlerSpider, city=city, state=state)
+    # yield runner.crawl(ApfParserSpider, apartments_to_scrape=links, file=apartments_file)
+    # links.clear()
     yield runner.crawl(ZillowCrawlerSpider, city=city, state=state)
     yield runner.crawl(ZillowParserSpider, apartments_to_scrape=complexes, file=zillow_file)
 
- 
 @defer.inlineCallbacks
 def run_for_all_cities(cities):
     start = time.time()
-    for location in cities[:4]:
+    for location in cities[3:4]:
+        
         city, state = location.split(',')
+        print(city,state)
         yield run_spiders_for_city(city.strip(), state.strip())
     print(f"all cities scraped, total time{time.time()-start}")
 
