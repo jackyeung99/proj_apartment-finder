@@ -39,7 +39,7 @@ class dataloader:
                         self.process_batch(batch_lines)
                         batch_lines = []  # Reset for next batch
                 if batch_lines:  # Process any remaining lines
-                    self.process_batch(batch_lines)
+                    self.process_batch(batch_lines) 
 
     def main(self):
         self.batch_inserts()
