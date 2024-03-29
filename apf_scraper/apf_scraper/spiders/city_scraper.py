@@ -1,6 +1,8 @@
 import scrapy
 import os 
 import re
+import json
+from datetime import date
 
 
 class CityScraperSpider(scrapy.Spider):
@@ -16,12 +18,13 @@ class CityScraperSpider(scrapy.Spider):
 
     def start_requests(self):
         self.links = self.get_links()
-        # for city in self.links:
-        yield scrapy.Request(
-            url=self.links[0].strip(),
-            callback=self.parse
-        )
+        for city in self.links:
+            yield scrapy.Request(
+                url=city.strip(),
+                callback=self.parse
+            )
 
+        
     def parse(self, response):
         city_data = {}
         sections = response.css('div#content > section')
@@ -31,7 +34,7 @@ class CityScraperSpider(scrapy.Spider):
         population_number = pop_section.xpath('b[contains(text(), "Population in 2021")]/following-sibling::text()[1]').extract_first(default='').strip()
         population_change_number = pop_section.xpath('b[contains(text(), "Population change since 2000")]/following-sibling::text()[1]').extract_first(default='').strip().replace('%','')
         
-        city_data['population'] = population_number.replace(',','')
+        city_data['population'] = population_number.replace(',','').split(' ')[0]
         city_data['population_change'] = population_change_number.replace('+','')
 
         # population by sex 
@@ -79,7 +82,19 @@ class CityScraperSpider(scrapy.Spider):
         city_data['poverty_percentage'] = self.extract_numbers(poverty_percentage)
 
         # crime
-        # crime_selector = sections.css('#crime')
+        crime_selector = sections.css('#crime')
+        crime_data = []
+    
+        years = crime_selector.css('table > thead > tr> th > h4::text').extract()[1:]
+        for year in years: 
+            crime_data.append({'year': year})
+
+        for row in crime_selector.css('table > tbody > tr'):
+            crime_type = row.css('td')[0].css('b::text').get()
+            for idx,col in enumerate(row.css('td')[1:]):
+                crime_data[idx][crime_type] = self.extract_numbers(col.css('small::text').get())
+
+        city_data['crime'] = crime_data
 
         # land area 
         land_area_selector = response.css('section#population-density p')
@@ -105,7 +120,7 @@ class CityScraperSpider(scrapy.Spider):
         unemployment_selector = sections.css('#unemployment')
         city_data['unemployment_rate'] = self.extract_numbers(unemployment_selector.xpath('div/table/tr[1]/td[2]/text()').extract_first())
 
-        # # most common industries 
+        # most common industries 
         # industries = sections.css('#most-common-industries')
 
         # # hospitals 
@@ -116,9 +131,9 @@ class CityScraperSpider(scrapy.Spider):
 
         # # schools 
         # schools = sections.css('#schools')
-        print(city_data)
 
-        # self.main_data.append(city_data)
+
+        self.main_data.append(city_data)
 
 
     def get_links(self):
@@ -126,4 +141,8 @@ class CityScraperSpider(scrapy.Spider):
             contents = f.readlines()
             return contents
 
-        
+    def closed(self, reason):
+        date_today = date.today()
+        data_path = os.path.join('..', f"data/raw_data/{date_today}_cityinfo.json")
+        with open(data_path, 'w') as f:
+            json.dump(self.main_data, f, indent=4)
