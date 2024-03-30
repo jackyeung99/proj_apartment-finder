@@ -7,8 +7,7 @@ class ZillowAPI(scrapy.Spider):
     name = 'zillow_api'
     allowed_domains = ['zillow56.p.rapidapi.com']
     
-   
-    def __init__(self, city, state,file, page_limit=2,):
+    def __init__(self, city, state, file, page_limit=24):
         super().__init__()
         self.city = city
         self.state = state
@@ -21,28 +20,26 @@ class ZillowAPI(scrapy.Spider):
         }
     
     def start_requests(self):
-        for page in range(1,self.page_limit+1):
+        for page in range(1, self.page_limit+1):
             url = self.start_url + f"&page={page}&status=forRent&isApartment=true&"
-            yield scrapy.Request(url=self.start_url,
-                                 headers=self.headers,
-                                 callback=self.parse)
-            break
+            yield scrapy.Request(url=url,
+                                headers=self.headers,
+                                callback=self.parse)
+    
 
     def parse(self, response):
-        json_response = response.json()
-        for unit in json_response: 
-            if zpid in unit.keys():
+        json_response = json.loads(response.text)
+        for unit in json_response.get('results','[]'): 
+            if 'zpid' in unit.keys():
                 zpid = unit.get('zpid')
-                url = "https://zillow56.p.rapidapi.com/property" + f"&zpid={zpid}"
+                url = "https://zillow56.p.rapidapi.com/property" + f"?zpid={zpid}"
                 yield scrapy.Request(
                     url=url,
                     headers=self.headers,
                     callback=self.parse_property_page
                 )
-
-
+            
     def parse_property_page(self,response): 
-        json_response = response.json()
-
-        yield Apartment()
+        json_response = json.loads(response.text)
+        yield Apartment({'apartment_json':json_response})
             

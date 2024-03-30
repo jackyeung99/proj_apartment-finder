@@ -36,8 +36,6 @@ def run_spiders_for_city(city, state):
     def collect_links(item, response, spider):
         if spider.name == 'apf_crawler':
             links.append(item['url'])
-        elif spider.name == 'zillow_crawler':
-            complexes.append(item['Geo'])
 
     dispatcher.connect(collect_links, signal=signals.item_scraped)
 
@@ -49,8 +47,7 @@ def run_spiders_for_city(city, state):
 @defer.inlineCallbacks
 def run_for_all_cities(cities):
     start = time.time()
-    for location in cities[3:4]:
-        
+    for location in cities:
         city, state = location.split(',')
         print(city,state)
         yield run_spiders_for_city(city.strip(), state.strip())

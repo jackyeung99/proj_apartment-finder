@@ -18,31 +18,58 @@ class dataloader:
         files = os.listdir(self.base_path)
         return files
 
-    def process_json(self,apartment_object):
-        apartment = json.loads(apartment_object)
-        print(apartment['apartment_json'].keys())
-
-    def process_batch(self,batch_lines):
-        # for apartment in batch_lines[:2]:
-        self.process_json(batch_lines[0])
+    def process_batch(self,batch_lines,type):
+        for apartment in batch_lines:
+            apartment = json.loads(apartment)
+            method_name = f'load_{type}'
+            process_method = getattr(self, method_name, None)
+            if process_method:
+                process_method(apartment)
+            else:
+                print(f"No method found for type: {type}")
+                
 
     def batch_inserts(self):
         # Read the JSONL file in batches and process each batch
         batch_size = 100
-        for file in self.files[:1]: 
+        for file in self.files: 
+            # check file type 
+            if 'city_data' in file.lower():
+                type = 'cities'
+            elif 'zillow' in file.lower():
+                type = 'zillow'
+            elif 'apartments' in file.lower():
+                type = 'apartments' 
+            else: 
+                type = 'market_trends'
+
+
             file_path = os.path.join(self.base_path, file)
             with open(file_path, 'r') as file:
                 batch_lines = []
                 for line in file:
                     batch_lines.append(line)
                     if len(batch_lines) >= batch_size:
-                        self.process_batch(batch_lines)
-                        batch_lines = []  # Reset for next batch
+                        self.process_batch(batch_lines,type)
+                        batch_lines = [] 
                 if batch_lines:  # Process any remaining lines
-                    self.process_batch(batch_lines) 
-
+                    self.process_batch(batch_lines, type) 
+            
     def main(self):
         self.batch_inserts()
+
+    # loading different file types and tables 
+    def load_apartments(self, apartment_json):
+        pass
+
+    def load_zillow(self,apartment_json):
+        pass
+
+    def load_market_trends(self, trends_json): 
+        pass
+
+    def load_cities(self, city_json):
+        pass
 
 
 if __name__ == "__main__":
