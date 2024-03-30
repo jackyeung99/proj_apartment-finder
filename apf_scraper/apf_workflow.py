@@ -17,8 +17,8 @@ from scrapy.utils.project import get_project_settings
 # import spiders
 from apf_scraper.spiders.apf_crawler import ApfCrawlerSpider
 from apf_scraper.spiders.apf_parser import ApfParserSpider
-from apf_scraper.spiders.zillow_crawler import ZillowCrawlerSpider
-from apf_scraper.spiders.zillow_parser import ZillowParserSpider
+from apf_scraper.spiders.zillow_api import ZillowAPI
+
 
 ''' Run spiders sequentially, while feeding in the data of the crawler spiders into the parsers'''
 @defer.inlineCallbacks
@@ -44,8 +44,7 @@ def run_spiders_for_city(city, state):
     # yield runner.crawl(ApfCrawlerSpider, city=city, state=state)
     # yield runner.crawl(ApfParserSpider, apartments_to_scrape=links, file=apartments_file)
     # links.clear()
-    yield runner.crawl(ZillowCrawlerSpider, city=city, state=state)
-    yield runner.crawl(ZillowParserSpider, apartments_to_scrape=complexes, file=zillow_file)
+    yield runner.crawl(ZillowAPI, city=city, state=state, file=zillow_file)
 
 @defer.inlineCallbacks
 def run_for_all_cities(cities):
