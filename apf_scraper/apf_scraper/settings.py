@@ -9,7 +9,7 @@
 
 
 # log level
-LOG_LEVEL = 'WARNING'
+LOG_LEVEL = 'INFO'
 
 # scrapy playwright
 DOWNLOAD_HANDLERS = {

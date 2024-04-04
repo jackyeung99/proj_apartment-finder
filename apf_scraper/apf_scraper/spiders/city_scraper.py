@@ -28,10 +28,15 @@ class CityScraperSpider(scrapy.Spider):
     def parse(self, response):
         city_data = {}
         sections = response.css('div#content > section')
+
+        # city name/state 
+        location = response.css('div#content > h1 > span::text').extract_first().split(',')
+        city_data['city'] = location[0].strip()
+        city_data['state'] = location[1].strip()
     
         # population 
         pop_section = sections.css('#city-population')
-        population_number = pop_section.xpath('b[contains(text(), "Population in 2021")]/following-sibling::text()[1]').extract_first(default='').strip()
+        population_number = pop_section.xpath('b[contains(text(), "Population in")]/following-sibling::text()[1]').extract_first(default='').strip()
         population_change_number = pop_section.xpath('b[contains(text(), "Population change since 2000")]/following-sibling::text()[1]').extract_first(default='').strip().replace('%','')
         
         city_data['population'] = population_number.replace(',','').split(' ')[0]
@@ -39,7 +44,7 @@ class CityScraperSpider(scrapy.Spider):
 
         # population by sex 
         pop_by_sex_selector = sections.css('#population-by-sex')
-        pop_numbers = pop_by_sex_selector.xpath('div/table/tr/td[1]/text()').extract()
+        pop_numbers = pop_by_sex_selector.xpath('div/table/tr/td[2]/text()').extract()
 
         city_data['males'] = self.extract_numbers(pop_numbers[0])
         city_data['females'] = self.extract_numbers(pop_numbers[1])
@@ -52,24 +57,24 @@ class CityScraperSpider(scrapy.Spider):
         # median income 
         income_selector = sections.css('#median-income')
         table_info = income_selector.xpath('div/table/tr/td[2]/text()').extract()
-        median_household_income_2000 = income_selector.xpath('b[contains(text(), "Estimated median household income in 2021:")]/following-sibling::b[contains(text(), "it was")]/following-sibling::text()[1]').extract_first(default='').strip()
-        per_capita_income_2000 = income_selector.xpath('b[contains(text(), "Estimated per capita income in 2021:")]/following-sibling::b[contains(text(), "it was")]/following-sibling::text()[1]').extract_first(default='').strip()
-        per_capita_income_2021 = income_selector .xpath('b[contains(text(), "Estimated per capita income in 2021:")]/following-sibling::text()[1]').extract_first(default='').strip()
+        median_household_income_2000 = income_selector.xpath('b[contains(text(), "Estimated median household income in")]/following-sibling::b[contains(text(), "it was")]/following-sibling::text()[1]').extract_first(default='').strip()
+        per_capita_income_2000 = income_selector.xpath('b[contains(text(), "Estimated per capita income in")]/following-sibling::b[contains(text(), "it was")]/following-sibling::text()[1]').extract_first(default='').strip()
+        per_capita_income_2022 = income_selector .xpath('b[contains(text(), "Estimated per capita income in")]/following-sibling::text()[1]').extract_first(default='').strip()
 
-        city_data['median_household_income_2021'] = self.extract_numbers(table_info[0])
+        city_data['median_household_income_2022'] = self.extract_numbers(table_info[0])
         city_data['median_household_income_2000'] = self.extract_numbers(median_household_income_2000)
-        city_data['per_capita_income_2021'] = self.extract_numbers(per_capita_income_2021)
+        city_data['per_capita_income_2022'] = self.extract_numbers(per_capita_income_2022)
         city_data['per_capita_income_2000'] = self.extract_numbers(per_capita_income_2000)
   
         # Houses 
-        median_house_value_2000 = income_selector.xpath('b[contains(text(), "Estimated median house or condo value in 2021:")]/following-sibling::b[contains(text(), "it was")]/following-sibling::text()[1]').extract_first(default='').strip()
-        city_data['median_house_value_2021'] = self.extract_numbers(table_info[1])
+        median_house_value_2000 = income_selector.xpath('b[contains(text(), "Estimated median house or condo value in")]/following-sibling::b[contains(text(), "it was")]/following-sibling::text()[1]').extract_first(default='').strip()
+        city_data['median_house_value_2022'] = self.extract_numbers(table_info[1])
         city_data['median_house_value_2000'] = self.extract_numbers(median_house_value_2000)
 
         # Apartment rent 
         rent_selector = sections.css('#median-rent')
-        median_gross_rent_value = rent_selector.xpath('p/b[contains(text(),"Median gross rent in 2021:")]/following-sibling::text()[1]').extract_first(default='').strip()
-        city_data['median_gross_rent_2021'] = self.extract_numbers(median_gross_rent_value)
+        median_gross_rent_value = rent_selector.xpath('p/b[contains(text(),"Median gross rent in")]/following-sibling::text()[1]').extract_first(default='').strip()
+        city_data['median_gross_rent'] = self.extract_numbers(median_gross_rent_value)
       
         # cost of living 
         col_selector = sections.css('#cost-of-living-index')
@@ -107,8 +112,8 @@ class CityScraperSpider(scrapy.Spider):
 
         # real estate taxes 
         taxes_selector = sections.css('#real-estate-taxes')
-        taxes_with_mortgage = taxes_selector.xpath('p/b[contains(text(), "Median real estate property taxes paid for housing units with mortgages in 2021:")]/following-sibling::text()[1]').re(r'\(([^)]+)\)')
-        taxes_no_mortgage = taxes_selector.xpath('p/b[contains(text(), "Median real estate property taxes paid for housing units with no mortgage in 2021:")]/following-sibling::text()[1]').re(r'\(([^)]+)\)')
+        taxes_with_mortgage = taxes_selector.xpath('p/b[contains(text(), "Median real estate property taxes paid for housing units with mortgages in")]/following-sibling::text()[1]').re(r'\(([^)]+)\)')
+        taxes_no_mortgage = taxes_selector.xpath('p/b[contains(text(), "Median real estate property taxes paid for housing units with no mortgage in")]/following-sibling::text()[1]').re(r'\(([^)]+)\)')
 
         if taxes_with_mortgage:
             city_data['tax_percentage_with_mortgage'] = self.extract_numbers(taxes_with_mortgage[0])
@@ -132,7 +137,7 @@ class CityScraperSpider(scrapy.Spider):
         # # schools 
         # schools = sections.css('#schools')
 
-
+        print(city_data)
         self.main_data.append(city_data)
 
 
@@ -143,6 +148,8 @@ class CityScraperSpider(scrapy.Spider):
 
     def closed(self, reason):
         date_today = date.today()
-        data_path = os.path.join('..', f"data/raw_data/{date_today}_cityinfo.json")
+        data_path = os.path.join('..', f"data/raw_data/{date_today}_city_data.json")
         with open(data_path, 'w') as f:
-            json.dump(self.main_data, f, indent=4)
+            for city in self.main_data:
+                json_line = json.dumps(city) + "\n" 
+                f.write(json_line)
