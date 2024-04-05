@@ -41,26 +41,32 @@ CREATE TABLE IF NOT EXISTS City_Crime(
 CREATE TABLE IF NOT EXISTS ApartmentComplex (
     BuildingId INTEGER PRIMARY KEY AUTOINCREMENT,
     CityId INTEGER,
+    WebsiteId VARCHAR(20),
     Name TEXT,
     BuildingUrl TEXT,
     Latitude REAL,
     Longitude REAL, 
-    PriceRange TEXT,
+    PriceMin INT,
+    PriceMax INT,
     Address TEXT,
     Neighborhood TEXT,
+    Zipcode INT, 
     NumUnits INTEGER,
-    Details TEXT,
+    Source TEXT,
     FOREIGN KEY (CityId) REFERENCES City(CityId)
 );
 
 CREATE TABLE IF NOT EXISTS ApartmentUnit (
     UnitId INTEGER PRIMARY KEY AUTOINCREMENT,
     BuildingId INTEGER,
+    WebsiteId VARCHAR(20),
     MaxRent REAL,
     ModelName TEXT,
     Beds INTEGER,
     Baths REAL,
     SquareFootage INTEGER,
+    Details TEXT,
+    IsAvailable TEXT, 
     FOREIGN KEY (BuildingId) REFERENCES ApartmentComplex(BuildingId)
 );
 
