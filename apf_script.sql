@@ -1,31 +1,36 @@
-CREATE TABLE IF NOT EXISTS City (
+DROP TABLE IF EXISTS City;
+DROP TABLE IF EXISTS CityCrime;
+DROP TABLE IF EXISTS ApartmentComplex;
+DROP TABLE IF EXISTS ApartmentUnit;
+DROP TABLE IF EXISTS UnitAmenities;
+
+CREATE TABLE City (
     CityId INTEGER PRIMARY KEY AUTOINCREMENT,
     CityName TEXT,
     State TEXT,
     Population INTEGER,
     Population_change REAL,
     Population_males REAL, 
-    Population_Females REAL,
-    Median_Resident_Age REAL,
+    Population_females REAL,
+    Median_resident_age REAL,
     Income_2022 INTEGER, 
     Income_2020 INTEGER, 
-    per_capita_income_2022 INTEGER, 
-    per_capita_income_2020 INTEGER, 
+    Per_capita_income_2022 INTEGER, 
+    Per_capita_income_2020 INTEGER, 
     Median_house_value_2022 INTEGER, 
     Median_house_value_2020 INTEGER,
-    Median_Gross_Rent_2022 INTEGER, 
+    Median_gross_rent_2022 INTEGER, 
     Cost_of_living REAL, 
-    Poverty_Percentage REAL,
+    Poverty_percentage REAL,
     Land_area REAL, 
-    Population_Density INTEGER, 
+    Population_density INTEGER, 
     Tax_with_mortgage REAL,
     Tax_no_mortgage REAL, 
     Unemployment REAL
 );
 
-CREATE TABLE IF NOT EXISTS City_Crime( 
+CREATE TABLE CityCrime( 
     Crime_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    CityId INTEGER,
     Year INTEGER, 
     Murders REAL,
     Rapes REAL,
@@ -35,12 +40,12 @@ CREATE TABLE IF NOT EXISTS City_Crime(
     Thefts REAL,
     Auto_thefts REAL, 
     Arson REAL,
+    CityId INTEGER,
     FOREIGN KEY (CityId) REFERENCES City(CityId)
 );
 
-CREATE TABLE IF NOT EXISTS ApartmentComplex (
+CREATE TABLE ApartmentComplex (
     BuildingId INTEGER PRIMARY KEY AUTOINCREMENT,
-    CityId INTEGER,
     WebsiteId VARCHAR(20),
     Name TEXT,
     BuildingUrl TEXT,
@@ -53,12 +58,12 @@ CREATE TABLE IF NOT EXISTS ApartmentComplex (
     Zipcode INT, 
     NumUnits INTEGER,
     Source TEXT,
+    CityId INTEGER,
     FOREIGN KEY (CityId) REFERENCES City(CityId)
 );
 
-CREATE TABLE IF NOT EXISTS ApartmentUnit (
+CREATE TABLE ApartmentUnit (
     UnitId INTEGER PRIMARY KEY AUTOINCREMENT,
-    BuildingId INTEGER,
     WebsiteId VARCHAR(20),
     MaxRent REAL,
     ModelName TEXT,
@@ -67,16 +72,11 @@ CREATE TABLE IF NOT EXISTS ApartmentUnit (
     SquareFootage INTEGER,
     Details TEXT,
     IsAvailable TEXT, 
-    FOREIGN KEY (BuildingId) REFERENCES ApartmentComplex(BuildingId)
-);
-
-CREATE TABLE IF NOT EXISTS BuildingAmenities (
     BuildingId INTEGER,
-    CommunityAmenities TEXT,
     FOREIGN KEY (BuildingId) REFERENCES ApartmentComplex(BuildingId)
 );
 
-CREATE TABLE IF NOT EXISTS UnitAmenities (
+CREATE TABLE UnitAmenities (
     UnitId INTEGER,
     UnitAmenities TEXT,
     FOREIGN KEY (UnitId) REFERENCES ApartmentUnit(UnitId)
