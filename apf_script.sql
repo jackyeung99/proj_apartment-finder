@@ -76,8 +76,9 @@ CREATE TABLE ApartmentUnit (
     FOREIGN KEY (BuildingId) REFERENCES ApartmentComplex(BuildingId)
 );
 
+-- links the website rental id to each amenitiy
 CREATE TABLE UnitAmenities (
-    UnitId INTEGER,
+    WebsietId INTEGER,
     UnitAmenities TEXT,
     FOREIGN KEY (UnitId) REFERENCES ApartmentUnit(UnitId)
 );

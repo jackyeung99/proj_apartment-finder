@@ -53,8 +53,8 @@ class ApartmentComplex(BaseModel):
 class ApartmentUnit(BaseModel):
     BuildingId: Optional[int]
     WebsiteId: str
-    MaxRent: float
-    ModelName: str
+    MaxRent: Optional[float]
+    ModelName: Optional[str]
     Beds: int
     Baths: float
     SquareFootage: Optional[int]
@@ -66,5 +66,5 @@ class BuildingAmenities(BaseModel):
     CommunityAmenities: str
 
 class UnitAmenities(BaseModel):
-    UnitId: int
+    websiteId: str
     UnitAmenities: str

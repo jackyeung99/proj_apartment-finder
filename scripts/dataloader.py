@@ -56,28 +56,31 @@ class dataloader:
 
                 parser = ZillowParser()
                 
+                apartment_data, units = parser.parse(apartment_json,city_id)
 
-                # apartment_data, units = parser.apartment_parser(apartment_json,city_id)
-            
                 # buildingid  = self.db_manager.insert_complex(apartment_data)
              
-                amenity_data = parser.amenity_parser(apartment_json) 
+                amenity_data = parser.parse_ammenity(apartment_json) 
+                print(amenity_data)
                 # self.db_manager.insert_amenities(amenity_data, unit_id)
 
     def load_apartments(self,file_path):
         city, state_abbr = self.parse_filename(file_path)
         city_id = self.db_manager.get_city_id(city,state_abbr)
         with self.db_manager, open(file_path, 'r') as f:
-            apartments_json = json.loads(f)
-            parser = ApartmentParser(apartments_json)
-            city_id = self.get_city_id(apartments_json)
-            for row in apartments_json: 
-                apartment_data, units = parser.apartment_parser(row,city_id)
-                buildingid  = self.db_manager.insert_complex(apartment_data)
-                unit_data, amenities = parser.unit_parser(units,buildingid)
-                unit_id = self.db_manager.insert_units(unit_data)
-                amenity_data = parser.amenity_parser(amenities, unit_id) 
-                self.db_manager.insert_amenities(amenity_data,unit_id)
+            for row in f: 
+                
+                apartment_json = json.loads(row)['apartment_json']
+        
+                parser = ApartmentParser()
+
+                apartment_data, units = parser.parse(apartment_json,city_id)
+            
+                # # buildingid  = self.db_manager.insert_complex(apartment_data)
+                # # unit_id = self.db_manager.insert_units(unit_data)
+                amenity_data = parser.parse_amenities(apartment_json) 
+                # print(amenity_data)
+                # self.db_manager.insert_amenities(amenity_data,unit_id)
 
 
     def load_cities(self,file_path):
