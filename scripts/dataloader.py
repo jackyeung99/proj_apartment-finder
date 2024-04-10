@@ -30,6 +30,13 @@ class dataloader:
         city = parts[-3].title().replace('-',' ')
         state_abbr = parts[-2].upper()  
         return city, state_abbr
+    
+    def retrieve_city_id(self,file_path):
+        '''  retrieve city_id from file assuming connection with db is open'''
+        city, state_abbr = self.parse_filename(file_path)
+        city_id = self.db_manager.get_city_id(city,state_abbr)
+        return city_id
+
 
     def process_file(self, file_path):
         source = None
@@ -46,41 +53,44 @@ class dataloader:
          
             
     def load_zillow(self, file_path):
-        city, state_abbr = self.parse_filename(file_path)
-        city_id = self.db_manager.get_city_id(city,state_abbr)
+        
         with self.db_manager, open(file_path, 'r') as f:
+
+            city_id = self.retrieve_city_id(file_path)
             
             for row in f: 
-
                 apartment_json = json.loads(row)['apartment_json']
 
                 parser = ZillowParser()
                 
-                apartment_data, units = parser.parse(apartment_json,city_id)
+                apartment_data, unit_data, amenity_data = parser.parse(apartment_json,city_id)
 
-                # buildingid  = self.db_manager.insert_complex(apartment_data)
-             
-                amenity_data = parser.parse_ammenity(apartment_json) 
-                print(amenity_data)
-                # self.db_manager.insert_amenities(amenity_data, unit_id)
+                # print(apartment_data)
+                # print(unit_data)
+                # print(amenity_data)
+
+                # self.db_manager.insert_complex(apartment_data)
+                # self.db_manager.insert_units(unit_data)
+                # self.db_manager.insert_amenities(amenity_data)
 
     def load_apartments(self,file_path):
-        city, state_abbr = self.parse_filename(file_path)
-        city_id = self.db_manager.get_city_id(city,state_abbr)
         with self.db_manager, open(file_path, 'r') as f:
+            city_id = self.retrieve_city_id(file_path)
+
             for row in f: 
-                
                 apartment_json = json.loads(row)['apartment_json']
         
                 parser = ApartmentParser()
 
-                apartment_data, units = parser.parse(apartment_json,city_id)
-            
-                # # buildingid  = self.db_manager.insert_complex(apartment_data)
-                # # unit_id = self.db_manager.insert_units(unit_data)
-                amenity_data = parser.parse_amenities(apartment_json) 
+                apartment_data, unit_data, amenity_data = parser.parse(apartment_json,city_id)
+
+                # print(apartment_data)
+                # print(unit_data) 
                 # print(amenity_data)
-                # self.db_manager.insert_amenities(amenity_data,unit_id)
+                
+                # self.db_manager.insert_complex(apartment_data)
+                # self.db_manager.insert_units(unit_data)
+                # self.db_manager.insert_amenities(amenity_data)
 
 
     def load_cities(self,file_path):
@@ -98,12 +108,13 @@ class dataloader:
 
     def batch_inserts(self):
         for file_path in self.retrieve_data_files():
-            if 'zillow' in file_path:
+            if 'apartment' in file_path:
                 try: 
                     self.process_file(file_path)
                 except ValueError as e:
                     print(e)
-                break
+
+               
                 
 
 

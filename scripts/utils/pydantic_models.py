@@ -36,8 +36,7 @@ class CityCrime(BaseModel):
     Arson: float
 
 class ApartmentComplex(BaseModel):
-    CityId: int
-    WebsiteId: str
+    ComplexId: str
     Name: Optional[str]
     BuildingUrl: HttpUrl
     Latitude: Optional[float]
@@ -49,10 +48,10 @@ class ApartmentComplex(BaseModel):
     Zipcode: int
     NumUnits: int
     Source: str
+    CityId: int  #foreign key 
 
 class ApartmentUnit(BaseModel):
-    BuildingId: Optional[int]
-    WebsiteId: str
+    UnitId: str
     MaxRent: Optional[float]
     ModelName: Optional[str]
     Beds: int
@@ -60,11 +59,9 @@ class ApartmentUnit(BaseModel):
     SquareFootage: Optional[int]
     Details: str
     IsAvailable: bool
-    
-class BuildingAmenities(BaseModel):
-    BuildingId: int
-    CommunityAmenities: str
+    ComplexId: str   #foreign key 
 
 class UnitAmenities(BaseModel):
-    websiteId: str
-    UnitAmenities: str
+    UnitId: str   #foreign key 
+    UnitAmenity: str  #foreign key 
+    subtype: Optional[str]

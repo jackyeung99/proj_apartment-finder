@@ -57,10 +57,10 @@ class DatabaseManager:
         self.execute_query('INSERT INTO ApartmentComplex(CityId, WebsiteId, Name, BuildingUrl, Latitude, Longitude, PriceMin, PriceMax, Address, Neighborhood, Zipcode, NumUnits, Source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', apartment_tuple)
 
     def insert_units(self, units):
-        self.execute_query(' INSERT INTO ApartmentUnit(BuildingId,WebsiteId,MaxRent,ModelName,Beds,Baths,SquareFootage,Details) VALUES (?,?,?,?,?,?,?,?)',units)
+        self.execute_many(' INSERT INTO ApartmentUnit(BuildingId,WebsiteId,MaxRent,ModelName,Beds,Baths,SquareFootage,Details) VALUES (?,?,?,?,?,?,?,?)',units)
 
     def insert_amenities(self, amenities): 
-        self.execute_query(' INSERT INTO Unit-Amenities(Unit_Id,CommunityAmmenities) VALUES (?,?)', amenities)
+        self.execute_many(' INSERT INTO Unit-Amenities(Unit_Id,CommunityAmmenities) VALUES (?,?)', amenities)
 
     def get_city_id(self, city, state_abbr):
         state = ABBR_TO_NAME[state_abbr]

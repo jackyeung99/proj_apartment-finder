@@ -44,9 +44,10 @@ CREATE TABLE CityCrime(
     FOREIGN KEY (CityId) REFERENCES City(CityId)
 );
 
+-- created are own id for each complex, utilizing prexisting ids given by each website to connect units and amenities.
 CREATE TABLE ApartmentComplex (
-    BuildingId INTEGER PRIMARY KEY AUTOINCREMENT,
-    WebsiteId VARCHAR(20),
+    APFId INTEGER PRIMARY KEY AUTOINCREMENT,
+    ComplexId VARCHAR(20),
     Name TEXT,
     BuildingUrl TEXT,
     Latitude REAL,
@@ -63,8 +64,7 @@ CREATE TABLE ApartmentComplex (
 );
 
 CREATE TABLE ApartmentUnit (
-    UnitId INTEGER PRIMARY KEY AUTOINCREMENT,
-    WebsiteId VARCHAR(20),
+    UnitId VARCHAR(20) PRIMARY KEY,
     MaxRent REAL,
     ModelName TEXT,
     Beds INTEGER,
@@ -72,13 +72,14 @@ CREATE TABLE ApartmentUnit (
     SquareFootage INTEGER,
     Details TEXT,
     IsAvailable TEXT, 
-    BuildingId INTEGER,
-    FOREIGN KEY (BuildingId) REFERENCES ApartmentComplex(BuildingId)
+    ComplexId INTEGER,
+    FOREIGN KEY (WebsiteId) REFERENCES ApartmentComplex(WebsietId)
 );
 
 -- links the website rental id to each amenitiy
 CREATE TABLE UnitAmenities (
-    WebsietId INTEGER,
+    UnitId INTEGER,
     UnitAmenities TEXT,
+    subtype TEXT,
     FOREIGN KEY (UnitId) REFERENCES ApartmentUnit(UnitId)
 );
