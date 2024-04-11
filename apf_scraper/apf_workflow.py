@@ -17,15 +17,18 @@ from scrapy.utils.project import get_project_settings
 # import spiders
 from apf_scraper.spiders.apf_crawler import ApfCrawlerSpider
 from apf_scraper.spiders.apf_parser import ApfParserSpider
-from apf_scraper.spiders.zillow_crawler import ZillowCrawlerSpider
-from apf_scraper.spiders.zillow_parser import ZillowParserSpider
+from apf_scraper.spiders.zillow_api import ZillowAPI
+
 
 ''' Run spiders sequentially, while feeding in the data of the crawler spiders into the parsers'''
 @defer.inlineCallbacks
-def run_spiders_for_city(city, state, file):
+def run_spiders_for_city(city, state):
     links = []
     complexes = []
-    
+
+    apartments_file = get_file(city=city,state=state,type='apartments')
+    zillow_file = get_file(city=city,state=state,type='zillow')
+
     settings = get_project_settings()
     configure_logging(settings)
     runner = CrawlerRunner(settings)
@@ -33,31 +36,29 @@ def run_spiders_for_city(city, state, file):
     def collect_links(item, response, spider):
         if spider.name == 'apf_crawler':
             links.append(item['url'])
-        elif spider.name == 'zillow_crawler':
-            complexes.append(item['Geo'])
 
     dispatcher.connect(collect_links, signal=signals.item_scraped)
 
     yield runner.crawl(ApfCrawlerSpider, city=city, state=state)
-    yield runner.crawl(ApfParserSpider, apartments_to_scrape=links, file=file)
-    yield runner.crawl(ZillowCrawlerSpider, city=city, state=state)
-    yield runner.crawl(ZillowParserSpider, apartments_to_scrape=complexes, file=file)
+    yield runner.crawl(ApfParserSpider, apartments_to_scrape=links, file=apartments_file)
+    links.clear()
+    yield runner.crawl(ZillowAPI, city=city, state=state, file=zillow_file)
 
- 
 @defer.inlineCallbacks
 def run_for_all_cities(cities):
     start = time.time()
-    for location in cities:
-        city, state = location.split(',')
-        file = get_file(city.strip(),state.strip())
-        yield run_spiders_for_city(city.strip(), state.strip(),file)
-    print(f"all cities scraped, total time{time.time()-start}")
+    # for location in cities:
+    #     city, state = location.split(',')
+    #     print(city,state)
+    #     yield run_spiders_for_city(city.strip(), state.strip())
+    # print(f"all cities scraped, total time{time.time()-start}")
+    yield run_spiders_for_city('bloomington', 'in')
 
 
-def get_file(city,state):
+def get_file(city,state,type):
     base_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
     date_today = date.today()
-    return  os.path.join(base_path, f"data/raw_data/{city}_{state}_{date_today}.jsonl")
+    return  os.path.join(base_path, f"data/raw_data/{type}_{city}_{state}_{date_today}.jsonl")
     
 if __name__ == "__main__":
     with open('cities.txt','r') as f: 
