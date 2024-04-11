@@ -44,10 +44,9 @@ CREATE TABLE CityCrime(
     FOREIGN KEY (CityId) REFERENCES City(CityId)
 );
 
--- created are own id for each complex, utilizing prexisting ids given by each website to connect units and amenities.
+--  utilized each websites unique id within our primary keys, no overlap as they have different structures 
 CREATE TABLE ApartmentComplex (
-    APFId INTEGER PRIMARY KEY AUTOINCREMENT,
-    ComplexId VARCHAR(20),
+    ComplexId TEXT PRIMARY KEY,
     Name TEXT,
     BuildingUrl TEXT,
     Latitude REAL,
@@ -59,27 +58,33 @@ CREATE TABLE ApartmentComplex (
     Zipcode INT, 
     NumUnits INTEGER,
     Source TEXT,
+    Phone VARCHAR(15),
     CityId INTEGER,
     FOREIGN KEY (CityId) REFERENCES City(CityId)
 );
 
 CREATE TABLE ApartmentUnit (
-    UnitId VARCHAR(20) PRIMARY KEY,
+    UnitId TEXT PRIMARY KEY,
     MaxRent REAL,
     ModelName TEXT,
     Beds INTEGER,
     Baths REAL,
     SquareFootage INTEGER,
     Details TEXT,
-    IsAvailable TEXT, 
-    ComplexId INTEGER,
-    FOREIGN KEY (WebsiteId) REFERENCES ApartmentComplex(WebsietId)
+    IsAvailable INTEGER, 
+    ComplexId TEXT,
+    FOREIGN KEY (ComplexId) REFERENCES ApartmentComplex(ComplexId)
 );
 
--- links the website rental id to each amenitiy
 CREATE TABLE UnitAmenities (
-    UnitId INTEGER,
-    UnitAmenities TEXT,
+    UnitId TEXT,
+    UnitAmenity TEXT,
     subtype TEXT,
     FOREIGN KEY (UnitId) REFERENCES ApartmentUnit(UnitId)
 );
+
+
+
+UPDATE City 
+SET CityName = 'Nashville'
+WHERE CityId = 14;

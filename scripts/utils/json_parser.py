@@ -1,7 +1,7 @@
 import json 
 import utils.pydantic_models as pyd
 
-''' Opted for a nested parsing approach, in which child functions are responsible for parts, and parent functions call the children, the other option would be to employ a flat-parsing method '''
+''' Approach to parsing through complex and nested json files. Assigned different classes each filetypes as they have unique key,val structures'''
 
 class BaseParser:
     """
@@ -16,6 +16,7 @@ class BaseParser:
 
 class ApartmentParser(BaseParser):
     def parse(self, apartment_json, city_id):
+        ''' for a given apartment retrieve all relevent and validated data for insertion into a relational database'''
         apartment_data = self.parse_complex(apartment_json, city_id)
 
         units_data = [self.parse_unit(unit, apartment_data.ComplexId ) for unit in apartment_json.get('rentals', [])] 
@@ -25,6 +26,14 @@ class ApartmentParser(BaseParser):
         return apartment_data, units_data, amenities_data
     
     def parse_complex(self, apartment_json, city_id):
+        ''' for each complex parse the json and assign values to the validation model'''
+
+        # handle zipcode whoich can be null 
+        try:
+            zipcode = int(apartment_json.get('listingZip', '') or 0)  # Converts empty string to 0
+        except ValueError:
+            zipcode = None  # or some default value, e.g., 0
+    
         apartment_data = pyd.ApartmentComplex(
             CityId = city_id,
             ComplexId = str(apartment_json['listingId']),
@@ -36,13 +45,15 @@ class ApartmentParser(BaseParser):
             PriceMax = apartment_json.get('listingMaxRent'),
             Address = apartment_json.get('listingAddress'),
             Neighborhood = apartment_json.get('listingNeighborhood'),
-            Zipcode = apartment_json.get('listingZip'),
+            Zipcode = zipcode,
             NumUnits = len(apartment_json.get('rentals', [])),
-            Source = 'apartments.com')
+            Source = 'apartments.com',
+            Phone = apartment_json.get('phoneNumber',''))
         
         return apartment_data
 
     def parse_unit(self, unit_json, complex_id):
+        ''' parse each unit and assign to validation model'''
         unit_data = pyd.ApartmentUnit(
             ComplexId=complex_id,
             UnitId=unit_json.get('RentalKey'),
@@ -57,23 +68,27 @@ class ApartmentParser(BaseParser):
         return unit_data
 
     def parse_amenities(self, apartment_json):
+        # parse through nested json and loop through each amenity for a given unit
         amenity_data = []
 
-        for units in apartment_json.get('rentals', []):
-            interior_amenities = units.get('InteriorAmenities', {}) or {}
+        for unit in apartment_json.get('rentals', []):
+            interior_amenities = unit.get('InteriorAmenities', {}) or {}
             for subcategory in interior_amenities.get('SubCategories', []):
-                for amenity in subcategory.get('Amenities', []):
-                    amenity_data.append(
-                        pyd.UnitAmenities(
-                                UnitId=units.get('RentalKey'), UnitAmenity=amenity.get('Name'),
-                                subtype = subcategory.get('Name')
-                                ))
-                   
+                amenity_data += [
+                    pyd.UnitAmenities(
+                        UnitId=unit.get('RentalKey'), 
+                        UnitAmenity=amenity.get('Name'),
+                        subtype=subcategory.get('Name')
+                    )
+                    for amenity in subcategory.get('Amenities', [])
+                    if amenity.get('Name')
+                    ]
         
         return amenity_data
 
 class ZillowParser(BaseParser):
     def parse(self, apartment_json, city_id):
+        ''' for a given apartment retrieve all relevent and validated data for insertion into a relational database'''
 
         apartment_data = self.parse_complex(apartment_json, city_id)
 
@@ -87,10 +102,11 @@ class ZillowParser(BaseParser):
 
 
     def parse_complex(self,apartment_json, city_id): 
+        ''' for each complex parse the json and assign values to the validation model'''
         
         neighborhood = apartment_json.get('neighborhoodRegion')
         neighborhood_name = neighborhood.get('name') if neighborhood is not None else None
-
+    
         apartment_data = pyd.ApartmentComplex(
             CityId = city_id,
             ComplexId = str(apartment_json['zpid']),
@@ -104,7 +120,8 @@ class ZillowParser(BaseParser):
             Neighborhood = neighborhood_name,
             Zipcode = apartment_json.get('address', {}).get('zipcode', 0),
             NumUnits = 1,
-            Source = 'zillow.com'
+            Source = 'zillow.com',
+            Phone = apartment_json['attributionInfo'].get('agentPhoneNumber','')
             )
         
         return apartment_data
@@ -124,18 +141,20 @@ class ZillowParser(BaseParser):
         return unit_data
 
     def parse_amenities(self,apartment_json):
+        # parse through nested json and loop through each amenity for a given unit
         amenities = []
 
         multivalue_keys = ['appliances','allowedPets', 'exteriorFeatires','laundryFeatures','parkingFeatures']
         for k,v in apartment_json['resoFacts'].items():
+            # check if boolean is true for dictionary of amenities ex. (HasParking: True)
             if v is True :
-
                 amenities.append(pyd.UnitAmenities(
                     UnitId=str(apartment_json['zpid']),
                     UnitAmenity=k,
                     subtype = None
                     ))
                 
+            # check for multivalued amenities
             if k in multivalue_keys and v:
                 for val in v:  
                     amenities.append(pyd.UnitAmenities(

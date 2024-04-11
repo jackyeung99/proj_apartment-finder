@@ -14,3 +14,4 @@ http://www.city-data.com/city/Denver-Colorado.html
 https://www.city-data.com/city/Nashville-Davidson-Tennessee.html
 http://www.city-data.com/city/Boston-Massachusetts.html
 http://www.city-data.com/city/Atlanta-Georgia.html
+https://www.city-data.com/city/Bloomington-Indiana.html

@@ -1,6 +1,7 @@
 from pydantic import BaseModel, HttpUrl, validator
 from typing import List, Optional
 
+''' Validation models before inserting data into sqlite database'''
 class City(BaseModel):
     CityName: str
     State: str
@@ -38,24 +39,25 @@ class CityCrime(BaseModel):
 class ApartmentComplex(BaseModel):
     ComplexId: str
     Name: Optional[str]
-    BuildingUrl: HttpUrl
+    BuildingUrl: str
     Latitude: Optional[float]
     Longitude: Optional[float]
     PriceMin: int
     PriceMax: int
     Address: str
     Neighborhood: Optional[str]
-    Zipcode: int
+    Zipcode: Optional[int]
     NumUnits: int
     Source: str
+    Phone: Optional[str]
     CityId: int  #foreign key 
 
 class ApartmentUnit(BaseModel):
     UnitId: str
     MaxRent: Optional[float]
     ModelName: Optional[str]
-    Beds: int
-    Baths: float
+    Beds: Optional[int]
+    Baths: Optional[float]
     SquareFootage: Optional[int]
     Details: str
     IsAvailable: bool
@@ -63,5 +65,5 @@ class ApartmentUnit(BaseModel):
 
 class UnitAmenities(BaseModel):
     UnitId: str   #foreign key 
-    UnitAmenity: str  #foreign key 
+    UnitAmenity: str  
     subtype: Optional[str]
