@@ -36,7 +36,7 @@ class NeuralNetworkRegressor:
         model.compile(optimizer='adam', loss='mse')
         return model
 
-    def fit(self, df, epochs=10, batch_size=32, validation_split=0.2):
+    def fit(self, df, epochs=200, batch_size=32, validation_split=0.2):
 
         X = df.drop(self.target_column, axis=1)
         y = df[self.target_column]
