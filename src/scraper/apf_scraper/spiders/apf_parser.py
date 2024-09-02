@@ -71,3 +71,4 @@ class ApfParserSpider(scrapy.Spider):
         # identify source
         combined_json['source'] = 'apartments.com'
         return combined_json
+    

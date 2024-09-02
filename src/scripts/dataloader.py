@@ -2,8 +2,8 @@
 import os 
 import json
 import logging
-from utils.database_manager import DatabaseManager
-from utils.json_parser import  CityParser, ZillowParser, ApartmentParser
+from src.utils.database_manager import DatabaseManager
+from src.utils.json_parser import  CityParser, ZillowParser, ApartmentParser
 
 
 class dataloader:

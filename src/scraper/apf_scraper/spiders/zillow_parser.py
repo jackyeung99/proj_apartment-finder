@@ -15,7 +15,9 @@ class ZillowParserSpider(scrapy.Spider):
         
     def start_requests(self):
         fsbo_url = r'https://www.zillow.com/apartments/bronx-ny/estela-properties/CJbB6G/'
-        yield scrapy.Request(fsbo_url, callback=self.start_requests, meta={"proxy": PROXY})
+        yield scrapy.Request(fsbo_url, callback=self.start_requests,
+                            #   meta={"proxy": PROXY}
+                              )
 
     def start_requests(self):
         for idx,items in enumerate(self.parse_list):

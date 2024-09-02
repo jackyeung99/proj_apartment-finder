@@ -3,3 +3,4 @@ data/raw_data/
 apf.db
 .venv
 chromedriver.exe
+node_modules

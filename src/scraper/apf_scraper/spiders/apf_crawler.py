@@ -18,8 +18,9 @@ class ApfCrawlerSpider(scrapy.Spider):
         '''Start workflow for link crawler'''
         initial_url = f"https://www.apartments.com/{self.housing_type}/{self.city}-{self.state}/"
         yield Request(url=initial_url, callback=self.parse_initial,meta=dict(
-			    playwright = True,
-			    playwright_include_page = True))
+			    playwright = True,)
+			    # playwright_include_page = True)
+                )
 
     def parse_initial(self, response):
         ''' Pagination logic to scrape through all available pages'''
@@ -28,15 +29,18 @@ class ApfCrawlerSpider(scrapy.Spider):
             for page_num in range(1,max_page_num + 1):
                 url = f"https://www.apartments.com/{self.housing_type}/{self.city}-{self.state}/{page_num}/"
                 yield Request(url=url, callback=self.parse,meta=dict(
-			    playwright = True,
-			    playwright_include_page = True))
+			    playwright = True,)
+			    # playwright_include_page = True)
+                )
 
     def extract_max_page(self, response):
-        ''' Retrieve max page to limit pagination'''
         page_range_text = response.css(".pageRange::text").get()
         if page_range_text:
-            return int(re.search(r'Page \d+ of (\d+)', page_range_text).group(1))
+            match = re.search(r'Page \d+ of (\d+)', page_range_text)
+            if match:
+                return int(match.group(1))
         return 0
+
 
     def parse(self, response):
         ''' Retrieve all unique apartment links'''
@@ -47,3 +51,4 @@ class ApfCrawlerSpider(scrapy.Spider):
 
     def closed(self, reason):
         print(f"Spider closed because {reason}")
+
