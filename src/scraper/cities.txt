@@ -1,0 +1,16 @@
+new-york,ny
+chicago,il
+miami,fl
+san-diego,ca
+seattle,wa
+los-angeles,ca
+portland,or
+austin,tx
+philadelphia,pa
+houston,tx
+phoenix,az
+san-francisco,ca
+denver,co
+nashville,tn
+boston,ma
+atlanta,ga
