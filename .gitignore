@@ -1,5 +1,5 @@
 creds.py
-data/raw_data
+data/raw_data/
 apf.db
 .venv
 chromedriver.exe
