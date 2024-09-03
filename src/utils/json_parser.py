@@ -1,5 +1,5 @@
 import json 
-import utils.pydantic_models as pyd
+import src.utils.pydantic_models as pyd
 
 ''' Approach to parsing through complex and nested json files. Assigned different classes each filetypes as they have unique key,val structures'''
 
@@ -19,7 +19,10 @@ class ApartmentParser(BaseParser):
         ''' for a given apartment retrieve all relevent and validated data for insertion into a relational database'''
         apartment_data = self.parse_complex(apartment_json, city_id)
 
-        units_data = [self.parse_unit(unit, apartment_data.ComplexId ) for unit in apartment_json.get('rentals', [])] 
+        rentals = apartment_json.get('rentals')
+        if rentals is None:
+            rentals = []
+        units_data = [self.parse_unit(unit, apartment_data.ComplexId) for unit in rentals if unit]
 
         amenities_data = self.parse_amenities(apartment_json)
 
@@ -33,6 +36,12 @@ class ApartmentParser(BaseParser):
             zipcode = int(apartment_json.get('listingZip', '') or 0)  # Converts empty string to 0
         except ValueError:
             zipcode = None  # or some default value, e.g., 0
+
+        num_units = apartment_json.get('rentals', [])
+        if num_units:
+            NumUnits = len(num_units)
+        else:
+            NumUnits = 0
     
         apartment_data = pyd.ApartmentComplex(
             CityId = city_id,
@@ -46,7 +55,7 @@ class ApartmentParser(BaseParser):
             Address = apartment_json.get('listingAddress'),
             Neighborhood = apartment_json.get('listingNeighborhood'),
             Zipcode = zipcode,
-            NumUnits = len(apartment_json.get('rentals', [])),
+            NumUnits = NumUnits,
             Source = 'apartments.com',
             Phone = apartment_json.get('phoneNumber',''))
         
@@ -70,19 +79,19 @@ class ApartmentParser(BaseParser):
     def parse_amenities(self, apartment_json):
         # parse through nested json and loop through each amenity for a given unit
         amenity_data = []
-
-        for unit in apartment_json.get('rentals', []):
-            interior_amenities = unit.get('InteriorAmenities', {}) or {}
-            for subcategory in interior_amenities.get('SubCategories', []):
-                amenity_data += [
-                    pyd.UnitAmenities(
-                        UnitId=unit.get('RentalKey'), 
-                        UnitAmenity=amenity.get('Name'),
-                        subtype=subcategory.get('Name')
-                    )
-                    for amenity in subcategory.get('Amenities', [])
-                    if amenity.get('Name')
-                    ]
+        if apartment_json.get('rentals', []):
+            for unit in apartment_json.get('rentals', []):
+                interior_amenities = unit.get('InteriorAmenities', {}) or {}
+                for subcategory in interior_amenities.get('SubCategories', []):
+                    amenity_data += [
+                        pyd.UnitAmenities(
+                            UnitId=unit.get('RentalKey'), 
+                            UnitAmenity=amenity.get('Name'),
+                            subtype=subcategory.get('Name')
+                        )
+                        for amenity in subcategory.get('Amenities', [])
+                        if amenity.get('Name')
+                        ]
         
         return amenity_data
 

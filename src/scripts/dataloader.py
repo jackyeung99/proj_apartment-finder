@@ -1,7 +1,13 @@
-
+import sys
 import os 
+
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.append(repo_root)
+
 import json
 import logging
+logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
+ 
 from src.utils.database_manager import DatabaseManager
 from src.utils.json_parser import  CityParser, ZillowParser, ApartmentParser
 
@@ -53,27 +59,35 @@ class dataloader:
          
 
 #  ------- different processing methods for each file type 
-    def load_apartments(self,file_path):
+
+    def load_apartments(self, file_path):
         with self.db_manager, open(file_path, 'r') as f:
-
-            # retrieve foreign key for complex
             city_id = self.retrieve_city_id(file_path)
+            logging.info(f"Processing apartments for city_id: {city_id}")
             
-            for row in f: 
+            for row in f:
                 apartment_json = json.loads(row)['apartment_json']
-
                 parser = ApartmentParser()
 
-                # retrieve data
-                apartment_data, unit_data, amenity_data = parser.parse(apartment_json,city_id)
-
-                # insert data into sql
+                apartment_data, unit_data, amenity_data = parser.parse(apartment_json, city_id)
+      
+                
+                # Insert data and log success
                 self.db_manager.insert_complex(apartment_data)
+                logging.info(f"Inserted apartment complex data: {apartment_data}")
+
                 for unit in unit_data:
                     self.db_manager.insert_units(unit)
-                
+                    logging.info(f"Inserted unit data: {unit}")
+
                 for amenity in amenity_data:
                     self.db_manager.insert_amenities(amenity)
+                    logging.info(f"Inserted amenity data: {amenity}")
+             
+
+                
+
+
 
     def load_zillow(self, file_path):
         with self.db_manager, open(file_path, 'r') as f:
@@ -130,6 +144,8 @@ class dataloader:
                 self.process_file(file_path)
             except ValueError as e:
                 print(e)
+
+        
 
 if __name__ == "__main__":
     loader = dataloader()
