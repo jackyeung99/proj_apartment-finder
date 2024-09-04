@@ -22,6 +22,7 @@ class ApartmentParser(BaseParser):
         rentals = apartment_json.get('rentals')
         if rentals is None:
             rentals = []
+            
         units_data = [self.parse_unit(unit, apartment_data.ComplexId) for unit in rentals if unit]
 
         amenities_data = self.parse_amenities(apartment_json)

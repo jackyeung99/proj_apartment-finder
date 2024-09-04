@@ -1,8 +1,15 @@
-import scrapy
-import os 
+import scrapy 
 import re
 import json
 from datetime import date
+
+import sys
+import os 
+
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..'))
+print(repo_root)
+sys.path.append(repo_root)
+
 
 
 class CityScraperSpider(scrapy.Spider):
@@ -142,13 +149,14 @@ class CityScraperSpider(scrapy.Spider):
 
 
     def get_links(self):
-        with open('city_stat_links.txt') as f:
+        links = os.path.join(repo_root, 'src', 'scraper', 'city_stat_links.txt')
+        with open(links) as f:
             contents = f.readlines()
             return contents
 
     def closed(self, reason):
         date_today = date.today()
-        data_path = os.path.join('..', f"data/raw_data/{date_today}_city_data.jsonl")
+        data_path = os.path.join(repo_root, f"data/raw_data/{date_today}_city_data.jsonl")
         with open(data_path, 'w') as f:
             for city in self.main_data:
                 json_line = json.dumps(city) + "\n" 

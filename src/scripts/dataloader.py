@@ -10,6 +10,7 @@ logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s -
  
 from src.utils.database_manager import DatabaseManager
 from src.utils.json_parser import  CityParser, ZillowParser, ApartmentParser
+from src.utils.state_abbreviations import NAME_TO_ABBR
 
 
 class dataloader:
@@ -66,12 +67,13 @@ class dataloader:
             logging.info(f"Processing apartments for city_id: {city_id}")
             
             for row in f:
+    
                 apartment_json = json.loads(row)['apartment_json']
                 parser = ApartmentParser()
 
                 apartment_data, unit_data, amenity_data = parser.parse(apartment_json, city_id)
-      
-                
+    
+
                 # Insert data and log success
                 self.db_manager.insert_complex(apartment_data)
                 logging.info(f"Inserted apartment complex data: {apartment_data}")
@@ -111,6 +113,7 @@ class dataloader:
                     self.db_manager.insert_amenities(amenity)
                 
     def load_cities(self,file_path):
+   
         with self.db_manager, open(file_path, 'r') as f:
             for line in f:
                 city_json = json.loads(line)
@@ -120,11 +123,15 @@ class dataloader:
 
                 # insert city and retrieve id 
                 self.db_manager.insert_city(city_data)
-                city_id = self.retrieve_city_id(file_path)
+
+                city = city_data.model_dump()['CityName']
+                state = NAME_TO_ABBR[city_data.model_dump()['State']]
+                city_id = self.db_manager.get_city_id(city, state)
 
                 # insert each year of crime
                 for crime_data in crimes:
                     self.db_manager.insert_crime(crime_data,city_id) 
+        
 #  -------
                 
     def insert_all_data(self):
@@ -134,16 +141,29 @@ class dataloader:
           parse and insert accordingly '''
         
         data_files = self.retrieve_data_files()
-        # assure to insert generic city information first so each complex can link there foreign keys to it
-        sorted_data_files = sorted(data_files, key=lambda x: "city_data" not in x)
+
+       # First, process city data
+        city_data_file = [file for file in data_files if "city_data" in file]
+        if city_data_file:
+            print(f"Processing city data: {city_data_file[0]}")
+            try:
+                self.load_cities(city_data_file[0])  # load the city data file
+            except ValueError as e:
+                print(f"Error processing city data: {e}")
+        else:
+            print("No city data file found.")
+
+        # Process the remaining files, skipping the city data file if already processed
+        sorted_data_files = [file for file in data_files if "city_data" not in file]
 
         for file_path in sorted_data_files:
-            print(f"processing {file_path}")
-            
-            try: 
+            print(f"Processing {file_path}")
+            try:
                 self.process_file(file_path)
             except ValueError as e:
-                print(e)
+                print(f"Error processing file {file_path}: {e}")
+
+     
 
         
 

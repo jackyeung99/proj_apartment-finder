@@ -77,6 +77,7 @@ class DatabaseManager:
             Tax_no_mortgage=excluded.Tax_no_mortgage,
             Unemployment=excluded.Unemployment;
         ''', values)
+        
        
     def insert_crime(self, crime, city_id):
         ''' insert crime values for each city, being careful to avoid duplicate years '''
@@ -222,10 +223,6 @@ class DatabaseManager:
         
         return df
     
-    def test(self):
-        query = '''SELECT count(*) FROM City;'''
-        rows = self.execute_query(query)
-        print(self.fetch_one())
 
 
     def commit_and_close(self):

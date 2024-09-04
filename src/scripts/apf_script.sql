@@ -26,7 +26,8 @@ CREATE TABLE City (
     Population_density INTEGER, 
     Tax_with_mortgage REAL,
     Tax_no_mortgage REAL, 
-    Unemployment REAL
+    Unemployment REAL,
+    UNIQUE(CityName, State)
 );
 
 CREATE TABLE CityCrime( 
