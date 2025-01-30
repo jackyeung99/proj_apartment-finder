@@ -28,13 +28,13 @@ class RentPricePredictor:
         joblib.dump(model, filename)
         print(f"Model saved to {filename}")
 
-    def tune_xgboost_hyperparameters(self,X, y, n_splits=5, n_iter=20):
+    def tune_xgboost_hyperparameters(self,X, y, n_splits=5, n_iter=5):
         xgb_model = xgb.XGBRegressor(objective='reg:squarederror', random_state=99)
         
         param_grid = {
             'n_estimators': [100, 200, 300],
-            'learning_rate': [0.01, 0.05, 0.1, 0.2],
-            'max_depth': [3, 5, 7, 9],
+            'learning_rate': [0.01, 0.05, 0.1],
+            'max_depth': [3, 5, 7],
             'min_child_weight': [1, 3, 5],
             'subsample': [0.6, 0.8, 1.0],
             'colsample_bytree': [0.6, 0.8, 1.0]
