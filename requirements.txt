@@ -47,7 +47,7 @@ jmespath==1.0.1
 joblib==1.4.2
 jupyter_client==8.6.2
 jupyter_core==5.7.2
-keras==3.5.0
+keras==3.9.0
 kiwisolver==1.4.6
 libclang==18.1.1
 lxml==5.3.0
